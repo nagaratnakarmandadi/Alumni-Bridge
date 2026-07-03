@@ -774,11 +774,7 @@ https://github.com/Yash8127
 
 💼 **LinkedIn**
 
-_Add your LinkedIn profile URL here_
-
-Example:
-
-https://www.linkedin.com/in/your-profile
+https://www.linkedin.com/in/yaswanth-gurindapalli-87734625b/
 
 ---
 
