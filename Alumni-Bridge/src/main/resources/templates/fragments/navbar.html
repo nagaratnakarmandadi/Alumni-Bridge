@@ -71,38 +71,59 @@
 
 				<ul class="navbar-nav ms-auto align-items-center">
 
-					<li class="nav-item"><a class="nav-link" href="/dashboard">🏠
-							Dashboard</a></li>
+					<li class="nav-item"><a class="nav-link" href="/dashboard">🏠 Dashboard</a></li>
 
-					<li class="nav-item"><a class="nav-link" href="/alumni">👥
-							Alumni</a></li>
+					<li class="nav-item"><a class="nav-link" href="/alumni">👥 Directory</a></li>
 
-					<li class="nav-item"><a class="nav-link" href="/jobs">💼
-							Jobs</a></li>
+					<li class="nav-item"><a class="nav-link" href="/jobs">💼 Jobs</a></li>
 
-					<li class="nav-item"><a class="nav-link" href="/messages">💬
-							Messages</a></li>
+					<li class="nav-item"><a class="nav-link" href="/events">📅 Events</a></li>
 
-					<li class="nav-item"><a class="nav-link" href="/events">📅
-							Events</a></li>
+					<li class="nav-item"><a class="nav-link" href="/messages">💬 Messages</a></li>
 
-					<li class="nav-item"><a class="nav-link" href="/my-events">🎟️
-							My Events</a></li>
-
-					<li class="nav-item"><a class="nav-link"
-						href="/my-applications">📄 Applications</a></li>
-
-					<li class="nav-item"><a class="nav-link" href="/profile">👤
-							Profile</a></li>
-
-					<!-- ADMIN LINK (Shown only for ADMIN users) -->
+					<!-- ADMIN BADGE (Quick link for admins) -->
 					<li class="nav-item" th:if="${session.loggedUser != null and session.loggedUser.role == 'ADMIN'}">
 						<a class="nav-link text-warning fw-semibold" href="/admin/dashboard">⚙️ Admin</a>
 					</li>
 
-					<li class="nav-item ms-3"><a
-						class="btn btn-danger btn-sm logout-btn" href="/logout">
-							Logout </a></li>
+					<!-- USER ACCOUNT DROPDOWN -->
+					<li class="nav-item dropdown ms-lg-3" th:if="${session.loggedUser != null}">
+						<a class="nav-link dropdown-toggle d-flex align-items-center gap-2 p-1" href="#" id="userMenuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							<img th:src="${session.loggedUser.profileImage != null and !#strings.isEmpty(session.loggedUser.profileImage)} ? 
+										 (${#strings.startsWith(session.loggedUser.profileImage, 'uploads/')} ? @{'/' + ${session.loggedUser.profileImage}} : @{'/uploads/' + ${session.loggedUser.profileImage}}) : 
+										 @{/images/default-avatar.svg}"
+								 onerror="this.onerror=null;this.src='/images/default-avatar.svg';"
+								 class="rounded-circle border" width="30" height="30" style="object-fit: cover;" alt="Avatar">
+							<span class="small fw-semibold text-white d-none d-sm-inline" th:text="${session.loggedUser.name}">User</span>
+						</a>
+						<ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-3 mt-2" aria-labelledby="userMenuDropdown">
+							<li class="px-3 py-2 border-bottom">
+								<span class="d-block small text-muted">Signed in as</span>
+								<strong class="d-block text-truncate small text-dark" th:text="${session.loggedUser.email}">email</strong>
+								<span class="badge mt-1" 
+									  th:classappend="${session.loggedUser.role == 'ADMIN' ? 'bg-warning text-dark' : (session.loggedUser.role == 'ALUMNI' ? 'bg-primary' : 'bg-secondary')}"
+									  th:text="${session.loggedUser.role}">ROLE</span>
+							</li>
+							<li><a class="dropdown-item py-2" href="/profile">👤 View Profile</a></li>
+							<li><a class="dropdown-item py-2" href="/edit-profile">✏️ Edit Profile</a></li>
+							<li th:if="${session.loggedUser.role == 'STUDENT'}">
+								<a class="dropdown-item py-2" href="/my-applications">📄 My Applications</a>
+							</li>
+							<li><a class="dropdown-item py-2" href="/my-events">🎟️ Registered Events</a></li>
+							<li th:if="${session.loggedUser.role == 'ADMIN'}">
+								<hr class="dropdown-divider">
+								<a class="dropdown-item py-2 text-warning fw-semibold" href="/admin/dashboard">⚙️ Admin Console</a>
+							</li>
+							<li><hr class="dropdown-divider"></li>
+							<li><a class="dropdown-item py-2 text-danger fw-semibold" href="/logout">🚪 Logout</a></li>
+						</ul>
+					</li>
+
+					<!-- GUEST ENTRY BUTTONS (If session empty) -->
+					<li class="nav-item ms-lg-2" th:if="${session.loggedUser == null}">
+						<a class="btn btn-outline-light btn-sm me-2" href="/login">Sign In</a>
+						<a class="btn btn-primary btn-sm" href="/register">Sign Up</a>
+					</li>
 
 				</ul>
 

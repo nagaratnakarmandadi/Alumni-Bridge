@@ -36,6 +36,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	       "(:company IS NULL OR :company = '' OR LOWER(p.company) LIKE LOWER(CONCAT('%', :company, '%'))) AND " +
 	       "(:skill IS NULL OR :skill = '' OR LOWER(p.skills) LIKE LOWER(CONCAT('%', :skill, '%'))) AND " +
 	       "(:gradYear IS NULL OR :gradYear = '' OR p.graduationYear = :gradYear) AND " +
+	       "(:mentorship IS NULL OR p.openForMentorship = :mentorship) AND " +
 	       "(:currentUserId IS NULL OR u.id != :currentUserId) AND (u.role != 'ADMIN') AND (u.blocked = false OR u.blocked IS NULL) " +
 	       "ORDER BY u.name ASC")
 	List<User> searchDirectory(@Param("keyword") String keyword,
@@ -43,5 +44,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	                           @Param("company") String company,
 	                           @Param("skill") String skill,
 	                           @Param("gradYear") String gradYear,
+	                           @Param("mentorship") Boolean mentorship,
 	                           @Param("currentUserId") Long currentUserId);
 }

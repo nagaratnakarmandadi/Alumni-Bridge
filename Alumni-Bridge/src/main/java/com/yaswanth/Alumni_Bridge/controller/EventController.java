@@ -72,8 +72,8 @@ public class EventController {
 		return "redirect:/events";
 	}
 
-	// REGISTER FOR EVENT (Support both GET and POST)
-	@RequestMapping(value = "/register-event/{id}", method = {RequestMethod.GET, RequestMethod.POST})
+	// REGISTER FOR EVENT (POST with GET redirect fallback)
+	@PostMapping("/register-event/{id}")
 	public String register(@PathVariable Long id, HttpSession session) {
 		User user = (User) session.getAttribute("loggedUser");
 		if (user == null) {
@@ -85,6 +85,11 @@ public class EventController {
 			eventService.register(user, event);
 		}
 
+		return "redirect:/events";
+	}
+
+	@GetMapping("/register-event/{id}")
+	public String registerGetFallback(@PathVariable Long id) {
 		return "redirect:/events";
 	}
 

@@ -26,6 +26,7 @@ public class AlumniController {
 			@RequestParam(required = false) String company,
 			@RequestParam(required = false) String skill,
 			@RequestParam(required = false) String gradYear,
+			@RequestParam(required = false) Boolean mentorship,
 			@RequestParam(required = false) String error,
 			Model model, HttpSession session) {
 
@@ -34,7 +35,7 @@ public class AlumniController {
 			return "redirect:/login";
 		}
 
-		List<User> users = userService.searchUsers(keyword, role, company, skill, gradYear, currentUser.getId());
+		List<User> users = userService.searchUsers(keyword, role, company, skill, gradYear, mentorship, currentUser.getId());
 
 		model.addAttribute("users", users);
 		model.addAttribute("keyword", keyword != null ? keyword : "");
@@ -42,6 +43,7 @@ public class AlumniController {
 		model.addAttribute("company", company != null ? company : "");
 		model.addAttribute("skill", skill != null ? skill : "");
 		model.addAttribute("gradYear", gradYear != null ? gradYear : "");
+		model.addAttribute("mentorship", mentorship);
 		if ("not_found".equals(error)) {
 			model.addAttribute("errorMessage", "The requested user profile was not found.");
 		}

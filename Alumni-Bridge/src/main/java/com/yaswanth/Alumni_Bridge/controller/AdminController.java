@@ -58,7 +58,7 @@ public class AdminController {
         return "admin-users";
     }
 
-    @RequestMapping(value = "/delete-user/{id}", method = {RequestMethod.GET, RequestMethod.POST})
+    @PostMapping("/delete-user/{id}")
     public String deleteUser(@PathVariable Long id, HttpSession session) {
         User user = (User) session.getAttribute("loggedUser");
         if (!isAdmin(user)) return "redirect:/dashboard";
@@ -72,7 +72,7 @@ public class AdminController {
         return "redirect:/admin/users";
     }
 
-    @RequestMapping(value = "/toggle-block/{id}", method = {RequestMethod.GET, RequestMethod.POST})
+    @PostMapping("/toggle-block/{id}")
     public String blockUser(@PathVariable Long id, HttpSession session) {
         User user = (User) session.getAttribute("loggedUser");
         if (!isAdmin(user)) return "redirect:/dashboard";
@@ -96,7 +96,7 @@ public class AdminController {
         return "admin-jobs";
     }
 
-    @RequestMapping(value = "/delete-job/{id}", method = {RequestMethod.GET, RequestMethod.POST})
+    @PostMapping("/delete-job/{id}")
     public String deleteJob(@PathVariable Long id, HttpSession session) {
         User user = (User) session.getAttribute("loggedUser");
         if (!isAdmin(user)) return "redirect:/dashboard";
@@ -115,7 +115,7 @@ public class AdminController {
         return "admin-events";
     }
 
-    @RequestMapping(value = "/delete-event/{id}", method = {RequestMethod.GET, RequestMethod.POST})
+    @PostMapping("/delete-event/{id}")
     public String deleteEvent(@PathVariable Long id, HttpSession session) {
         User user = (User) session.getAttribute("loggedUser");
         if (!isAdmin(user)) return "redirect:/dashboard";

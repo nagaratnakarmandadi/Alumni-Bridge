@@ -116,8 +116,12 @@ body {
 						<!-- EMAIL -->
 						<p class="text-muted mb-1" th:text="${user.email}"></p>
 
-						<!-- ROLE -->
-						<span class="badge bg-dark role-badge mb-3" th:text="${user.role}"></span>
+						<!-- ROLE & MENTORSHIP BADGE -->
+						<div>
+							<span class="badge bg-dark role-badge mb-3" th:text="${user.role}"></span>
+							<span th:if="${profile != null and profile.openForMentorship == true}" 
+								  class="badge bg-success role-badge mb-3 ms-1">🤝 Open for Mentorship</span>
+						</div>
 
 						<hr>
 

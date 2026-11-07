@@ -106,6 +106,17 @@ body {
 				<label class="section-title">📝 About / Bio</label>
 				<textarea th:field="*{bio}" rows="3" class="form-control mb-3" placeholder="Brief professional summary..."></textarea>
 
+				<!-- MENTORSHIP AVAILABILITY TOGGLE -->
+				<div class="card p-3 my-3 bg-light border-primary border-opacity-25 rounded-3">
+					<div class="form-check form-switch d-flex align-items-center gap-3">
+						<input class="form-check-input fs-5" type="checkbox" id="openForMentorship" th:field="*{openForMentorship}">
+						<label class="form-check-label" for="openForMentorship">
+							<strong class="text-primary">🤝 Open for Student Mentorship</strong>
+							<small class="d-block text-muted">Make your profile discoverable to students seeking career guidance, resume reviews, and interview prep.</small>
+						</label>
+					</div>
+				</div>
+
 				<!-- ACADEMIC DETAILS -->
 				<h5 class="border-bottom pb-2 mt-4 text-primary">🎓 Academic Background</h5>
 

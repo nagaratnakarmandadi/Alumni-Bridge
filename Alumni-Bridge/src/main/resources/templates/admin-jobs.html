@@ -63,9 +63,10 @@ body {
 						<div class="d-flex gap-2">
 							<a th:href="@{'/jobs/' + ${job.id} + '/applications'}"
 								class="btn btn-outline-info btn-sm flex-grow-1">View Applicants</a>
-							<a th:href="@{'/admin/delete-job/' + ${job.id}}"
-								onclick="return confirm('Are you sure you want to permanently delete this job posting? All candidate applications will also be removed.');"
-								class="btn btn-danger btn-sm">Delete</a>
+							<form th:action="@{'/admin/delete-job/' + ${job.id}}" method="post" class="d-inline"
+								  onsubmit="return confirm('Are you sure you want to permanently delete this job posting? All candidate applications will also be removed.');">
+								<button type="submit" class="btn btn-danger btn-sm">Delete</button>
+							</form>
 						</div>
 					</div>
 

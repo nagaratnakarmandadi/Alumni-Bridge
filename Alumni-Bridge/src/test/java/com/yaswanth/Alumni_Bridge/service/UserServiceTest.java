@@ -131,7 +131,7 @@ public class UserServiceTest {
 
     @Test
     void testSearchUsers_MultiField_CallsRepository() {
-        when(userRepository.searchDirectory("Java", "ALUMNI", "Google", "Spring", "2024", 1L))
+        when(userRepository.searchDirectory("Java", "ALUMNI", "Google", "Spring", "2024", null, 1L))
                 .thenReturn(List.of(sampleUser));
 
         List<User> results = userService.searchUsers("Java", "ALUMNI", "Google", "Spring", "2024", 1L);
@@ -139,6 +139,18 @@ public class UserServiceTest {
         assertNotNull(results);
         assertEquals(1, results.size());
         assertEquals("John Doe", results.get(0).getName());
-        verify(userRepository, times(1)).searchDirectory("Java", "ALUMNI", "Google", "Spring", "2024", 1L);
+        verify(userRepository, times(1)).searchDirectory("Java", "ALUMNI", "Google", "Spring", "2024", null, 1L);
+    }
+
+    @Test
+    void testSearchUsers_WithMentorshipFilter_CallsRepository() {
+        when(userRepository.searchDirectory("", "ALUMNI", "", "", "", true, 1L))
+                .thenReturn(List.of(sampleUser));
+
+        List<User> results = userService.searchUsers("", "ALUMNI", "", "", "", true, 1L);
+
+        assertNotNull(results);
+        assertEquals(1, results.size());
+        verify(userRepository, times(1)).searchDirectory("", "ALUMNI", "", "", "", true, 1L);
     }
 }

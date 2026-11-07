@@ -27,6 +27,8 @@ public class Profile {
 	private String linkedinUrl;
 	private String githubUrl;
 
+	private Boolean openForMentorship = false;
+
 	@OneToOne
 	@JoinColumn(name = "user_id")
 	@ToString.Exclude

@@ -101,18 +101,23 @@ public class UserService {
 
 	// Backwards-compatible 3-arg overload
 	public List<User> searchUsers(String keyword, String role, Long currentUserId) {
-		return searchUsers(keyword, role, null, null, null, currentUserId);
+		return searchUsers(keyword, role, null, null, null, null, currentUserId);
 	}
 
-	// Multi-field search querying name, company, skills, branch, degree, and graduation year
+	// Backwards-compatible 6-arg overload
 	public List<User> searchUsers(String keyword, String role, String company, String skill, String gradYear, Long currentUserId) {
+		return searchUsers(keyword, role, company, skill, gradYear, null, currentUserId);
+	}
+
+	// Multi-field search querying name, company, skills, branch, degree, graduation year, and mentorship status
+	public List<User> searchUsers(String keyword, String role, String company, String skill, String gradYear, Boolean mentorship, Long currentUserId) {
 		String cleanKeyword = (keyword != null) ? keyword.trim() : "";
 		String cleanRole = (role != null) ? role.trim() : "";
 		String cleanCompany = (company != null) ? company.trim() : "";
 		String cleanSkill = (skill != null) ? skill.trim() : "";
 		String cleanGradYear = (gradYear != null) ? gradYear.trim() : "";
 
-		return repo.searchDirectory(cleanKeyword, cleanRole, cleanCompany, cleanSkill, cleanGradYear, currentUserId);
+		return repo.searchDirectory(cleanKeyword, cleanRole, cleanCompany, cleanSkill, cleanGradYear, mentorship, currentUserId);
 	}
 
 	public User getUserById(Long id) {

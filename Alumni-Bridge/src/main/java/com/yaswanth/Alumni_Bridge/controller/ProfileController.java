@@ -135,10 +135,14 @@ public class ProfileController {
 			existingProfile.setPhone(profile.getPhone());
 			existingProfile.setLinkedinUrl(profile.getLinkedinUrl());
 			existingProfile.setGithubUrl(profile.getGithubUrl());
+			existingProfile.setOpenForMentorship(Boolean.TRUE.equals(profile.getOpenForMentorship()));
 
 			profileService.saveProfile(existingProfile);
 		} else {
 			profile.setUser(user);
+			if (profile.getOpenForMentorship() == null) {
+				profile.setOpenForMentorship(false);
+			}
 			profileService.saveProfile(profile);
 		}
 

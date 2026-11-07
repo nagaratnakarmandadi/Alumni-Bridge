@@ -70,6 +70,19 @@ body {
 							<a th:href="@{'/jobs/' + ${job.id}}" class="text-dark text-decoration-none" th:text="${job.title}">Job Title</a>
 						</h5>
 
+						<!-- METADATA BADGES -->
+						<div class="mb-2 d-flex flex-wrap gap-1">
+							<span th:if="${job.jobType != null and !#strings.isEmpty(job.jobType)}" 
+								  class="badge bg-primary-subtle text-primary border border-primary" 
+								  th:text="${job.jobType}">Full-time</span>
+							<span th:if="${job.salary != null and !#strings.isEmpty(job.salary)}" 
+								  class="badge bg-success-subtle text-success border border-success" 
+								  th:text="${job.salary}">Salary</span>
+							<span th:if="${job.experienceRequired != null and !#strings.isEmpty(job.experienceRequired)}" 
+								  class="badge bg-secondary-subtle text-secondary border border-secondary" 
+								  th:text="${job.experienceRequired}">Exp</span>
+						</div>
+
 						<!-- DETAILS -->
 						<p class="mb-1 text-primary fw-semibold">
 							🏢 <span th:text="${job.company}">Company</span>
@@ -77,6 +90,10 @@ body {
 
 						<p class="mb-1 text-muted small">
 							📍 <span th:text="${job.location != null ? job.location : 'Flexible'}">Location</span>
+						</p>
+
+						<p th:if="${job.deadline != null and !#strings.isEmpty(job.deadline)}" class="mb-1 text-danger small">
+							⏰ Deadline: <span th:text="${job.deadline}"></span>
 						</p>
 
 						<!-- CLICKABLE POSTED BY -->

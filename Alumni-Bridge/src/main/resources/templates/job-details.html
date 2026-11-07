@@ -27,15 +27,19 @@ body { background: #f4f6f9; padding-top: 80px; font-family: 'Segoe UI', sans-ser
         </div>
 
         <div class="row g-3 my-2 p-3 bg-light rounded">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <small class="text-muted">📍 Location</small>
-                <div class="fw-semibold" th:text="${job.location != null ? job.location : 'Not specified'}">Location</div>
+                <div class="fw-semibold" th:text="${job.location != null ? job.location : 'Flexible'}">Location</div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <small class="text-muted">💰 Compensation</small>
                 <div class="fw-semibold" th:text="${job.salary != null ? job.salary : 'Competitive'}">Salary</div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
+                <small class="text-muted">🎓 Experience</small>
+                <div class="fw-semibold" th:text="${job.experienceRequired != null and !#strings.isEmpty(job.experienceRequired) ? job.experienceRequired : 'All levels'}">Exp</div>
+            </div>
+            <div class="col-md-3">
                 <small class="text-muted">👤 Posted By</small>
                 <div>
                     <a th:if="${job.postedBy != null}" th:href="@{'/view-user/' + ${job.postedBy.id}}" 
@@ -43,6 +47,10 @@ body { background: #f4f6f9; padding-top: 80px; font-family: 'Segoe UI', sans-ser
                     <span th:if="${job.postedBy == null}" class="text-muted">AlumniBridge</span>
                 </div>
             </div>
+        </div>
+
+        <div th:if="${job.deadline != null and !#strings.isEmpty(job.deadline)}" class="alert alert-warning py-2 px-3 small my-2">
+            ⏰ Application Deadline: <strong th:text="${job.deadline}">Date</strong>
         </div>
 
         <div class="mt-4">
