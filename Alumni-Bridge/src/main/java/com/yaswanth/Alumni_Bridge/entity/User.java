@@ -2,6 +2,8 @@ package com.yaswanth.Alumni_Bridge.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity
 @Table(name = "users")
@@ -25,6 +27,8 @@ public class User {
 	private String role;
 
 	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@ToString.Exclude
+	@EqualsAndHashCode.Exclude
 	private Profile profile;
 
 	private String profileImage;

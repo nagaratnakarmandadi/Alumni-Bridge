@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.yaswanth.Alumni_Bridge.entity.Profile;
 import com.yaswanth.Alumni_Bridge.entity.User;
@@ -70,7 +71,7 @@ public class ProfileController {
 	@PostMapping("/save-profile")
 	public String saveProfile(@ModelAttribute Profile profile,
 			@RequestParam(value = "image", required = false) MultipartFile file, 
-			HttpSession session, Model model) throws Exception {
+			HttpSession session, Model model, RedirectAttributes redirectAttributes) throws Exception {
 
 		User user = (User) session.getAttribute("loggedUser");
 		if (user == null) {
@@ -93,10 +94,10 @@ public class ProfileController {
 				return "edit-profile";
 			}
 
-			// Validate maximum file size (5MB)
-			if (file.getSize() > 5 * 1024 * 1024) {
+			// Validate maximum file size (10MB)
+			if (file.getSize() > 10 * 1024 * 1024) {
 				model.addAttribute("profile", profile);
-				model.addAttribute("error", "Image size must not exceed 5MB.");
+				model.addAttribute("error", "Image size must not exceed 10MB.");
 				return "edit-profile";
 			}
 
@@ -136,6 +137,7 @@ public class ProfileController {
 			profileService.saveProfile(profile);
 		}
 
+		redirectAttributes.addFlashAttribute("success", "Profile updated successfully!");
 		return "redirect:/profile";
 	}
 }

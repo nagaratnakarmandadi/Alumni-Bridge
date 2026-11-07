@@ -79,6 +79,16 @@ body {
 		<div class="row justify-content-center">
 			<div class="col-md-7">
 
+				<!-- FLASH NOTIFICATIONS -->
+				<div th:if="${success}" class="alert alert-success alert-dismissible fade show text-center" role="alert">
+					<span th:text="${success}"></span>
+					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+				</div>
+				<div th:if="${error}" class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+					<span th:text="${error}"></span>
+					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+				</div>
+
 				<div class="card shadow-lg profile-card text-center">
 
 					<!-- HEADER -->

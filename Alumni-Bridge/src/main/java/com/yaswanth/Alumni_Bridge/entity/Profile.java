@@ -2,6 +2,8 @@ package com.yaswanth.Alumni_Bridge.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity
 @Data
@@ -27,5 +29,7 @@ public class Profile {
 
 	@OneToOne
 	@JoinColumn(name = "user_id")
+	@ToString.Exclude
+	@EqualsAndHashCode.Exclude
 	private User user;
 }

@@ -60,6 +60,9 @@ body {
 			<div th:if="${error}" class="alert alert-danger text-center">
 				<span th:text="${error}"></span>
 			</div>
+			<div th:if="${success}" class="alert alert-success text-center">
+				<span th:text="${success}"></span>
+			</div>
 
 			<!-- FORM START -->
 			<form th:action="@{/save-profile}" method="post"
@@ -75,10 +78,10 @@ body {
 						class="profile-img mb-2" alt="Profile Preview">
 
 					<div class="col-md-6 mx-auto">
-						<input type="file" name="image" class="form-control form-control-sm"
+						<input type="file" name="image" id="profileImageInput" class="form-control form-control-sm"
 							accept="image/png, image/jpeg, image/webp"
 							onchange="previewImage(event)">
-						<small class="text-muted">Allowed formats: JPG, PNG, WebP (Max 5MB)</small>
+						<small class="text-muted">Allowed formats: JPG, PNG, WebP (Max 10MB)</small>
 					</div>
 				</div>
 
@@ -152,13 +155,19 @@ body {
 
 	<script>
 		function previewImage(event) {
-			const reader = new FileReader();
-			reader.onload = function() {
-				const output = document.getElementById('preview');
-				output.src = reader.result;
-			}
-			if (event.target.files[0]) {
-				reader.readAsDataURL(event.target.files[0]);
+			const file = event.target.files[0];
+			if (file) {
+				if (file.size > 10 * 1024 * 1024) {
+					alert("The selected image exceeds the 10MB limit. Please select a smaller photo.");
+					event.target.value = "";
+					return;
+				}
+				const reader = new FileReader();
+				reader.onload = function() {
+					const output = document.getElementById('preview');
+					output.src = reader.result;
+				}
+				reader.readAsDataURL(file);
 			}
 		}
 	</script>
