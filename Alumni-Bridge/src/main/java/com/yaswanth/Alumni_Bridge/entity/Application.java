@@ -30,5 +30,15 @@ public class Application {
 
 	private String appliedDate;
 	private String resumeUrl;
+	private String resume;
 	private String coverNote;
+
+	public String getResume() {
+		return resumeUrl != null ? resumeUrl : resume;
+	}
+
+	public void setResume(String resume) {
+		this.resume = resume;
+		this.resumeUrl = resume;
+	}
 }

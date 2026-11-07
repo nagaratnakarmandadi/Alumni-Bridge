@@ -30,6 +30,7 @@ body { background: #f4f6f9; padding-top: 70px; font-family: 'Segoe UI', sans-ser
                     <th>Applicant</th>
                     <th>Email</th>
                     <th>Applied Date</th>
+                    <th>Resume</th>
                     <th>Status</th>
                 </tr>
             </thead>
@@ -40,6 +41,13 @@ body { background: #f4f6f9; padding-top: 70px; font-family: 'Segoe UI', sans-ser
                     <td th:text="${app.user != null ? app.user.name : 'Unknown User'}">Applicant</td>
                     <td th:text="${app.user != null ? app.user.email : 'N/A'}">Email</td>
                     <td th:text="${app.appliedDate != null ? app.appliedDate : 'Recent'}">Date</td>
+                    <td>
+                        <a th:if="${app.resume != null and !#strings.isEmpty(app.resume)}" 
+                           th:href="@{'/uploads/resumes/' + ${app.resume}}" target="_blank" class="badge bg-secondary text-decoration-none">
+                            📄 View CV
+                        </a>
+                        <span th:if="${app.resume == null or #strings.isEmpty(app.resume)}" class="text-muted small">-</span>
+                    </td>
                     <td>
                         <span class="badge" 
                               th:classappend="${app.status == 'ACCEPTED' ? 'bg-success' : (app.status == 'REJECTED' ? 'bg-danger' : (app.status == 'SHORTLISTED' ? 'bg-info' : 'bg-secondary'))}"

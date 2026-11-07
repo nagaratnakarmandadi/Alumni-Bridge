@@ -34,6 +34,7 @@ body { background: #f4f6f9; padding-top: 80px; font-family: 'Segoe UI', sans-ser
                 <tr>
                     <th>Candidate</th>
                     <th>Email</th>
+                    <th>Resume</th>
                     <th>Applied Date</th>
                     <th>Current Status</th>
                     <th>Action</th>
@@ -47,6 +48,15 @@ body { background: #f4f6f9; padding-top: 80px; font-family: 'Segoe UI', sans-ser
                         <span th:if="${app.user == null}" class="text-muted">Unknown</span>
                     </td>
                     <td th:text="${app.user != null ? app.user.email : 'N/A'}">email</td>
+                    <td>
+                        <a th:if="${app.resume != null and !#strings.isEmpty(app.resume)}" 
+                           th:href="@{'/uploads/resumes/' + ${app.resume}}" 
+                           target="_blank" 
+                           class="btn btn-sm btn-outline-danger">
+                            📄 View CV
+                        </a>
+                        <span th:if="${app.resume == null or #strings.isEmpty(app.resume)}" class="text-muted small">Not provided</span>
+                    </td>
                     <td th:text="${app.appliedDate != null ? app.appliedDate : 'Recent'}">Date</td>
                     <td>
                         <span class="badge" 

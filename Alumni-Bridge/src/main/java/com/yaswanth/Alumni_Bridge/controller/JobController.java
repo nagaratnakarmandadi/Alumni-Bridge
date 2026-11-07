@@ -1,14 +1,17 @@
 package com.yaswanth.Alumni_Bridge.controller;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.yaswanth.Alumni_Bridge.entity.*;
 import com.yaswanth.Alumni_Bridge.service.*;
@@ -105,9 +108,11 @@ public class JobController {
 		return "redirect:/jobs";
 	}
 
-	// APPLY JOB
+	// APPLY JOB with optional resume upload
 	@RequestMapping(value = "/apply/{jobId}", method = {RequestMethod.GET, RequestMethod.POST})
-	public String applyJob(@PathVariable Long jobId, HttpSession session) {
+	public String applyJob(@PathVariable Long jobId,
+			@RequestParam(value = "resumeFile", required = false) MultipartFile resumeFile,
+			HttpSession session) {
 		User user = (User) session.getAttribute("loggedUser");
 		if (user == null) {
 			return "redirect:/login";
@@ -129,10 +134,37 @@ public class JobController {
 			app.setUser(user);
 			app.setStatus("APPLIED");
 			app.setAppliedDate(LocalDate.now().toString());
+
+			// Process Resume Upload if attached
+			if (resumeFile != null && !resumeFile.isEmpty()) {
+				try {
+					String origName = resumeFile.getOriginalFilename();
+					String ext = "";
+					if (origName != null && origName.contains(".")) {
+						ext = origName.substring(origName.lastIndexOf(".") + 1).toLowerCase();
+					}
+
+					List<String> allowedExtensions = List.of("pdf", "doc", "docx");
+					if (allowedExtensions.contains(ext) && resumeFile.getSize() <= 10 * 1024 * 1024) {
+						String uploadDir = System.getProperty("user.dir") + "/uploads/resumes/";
+						File uploadPath = new File(uploadDir);
+						if (!uploadPath.exists()) {
+							uploadPath.mkdirs();
+						}
+
+						String fileName = UUID.randomUUID().toString() + "." + ext;
+						resumeFile.transferTo(new File(uploadPath, fileName));
+						app.setResume(fileName);
+					}
+				} catch (Exception e) {
+					// Fallback to saving application if I/O fails
+				}
+			}
+
 			appService.apply(app);
 		}
 
-		return "redirect:/jobs";
+		return "redirect:/my-applications";
 	}
 
 	// RECRUITER APPLICANT REVIEW PORTAL

@@ -62,15 +62,42 @@ body { background: #f4f6f9; padding-top: 80px; font-family: 'Segoe UI', sans-ser
                 </a>
 
                 <!-- Apply button -->
-                <div th:if="${!isApplied}">
-                    <a th:href="@{'/apply/' + ${job.id}}" class="btn btn-success px-4">
+                <div th:if="${!isApplied and !isOwner}">
+                    <button type="button" class="btn btn-success px-4" data-bs-toggle="modal" data-bs-target="#applyModal">
                         🚀 Apply Now
-                    </a>
+                    </button>
                 </div>
                 <div th:if="${isApplied}">
                     <button class="btn btn-secondary px-4" disabled>✔ Already Applied</button>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- APPLY MODAL -->
+<div class="modal fade" id="applyModal" tabindex="-1" aria-labelledby="applyModalLabel" aria-hidden="true" th:if="${!isApplied and !isOwner}">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="applyModalLabel">Submit Application</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form th:action="@{'/apply/' + ${job.id}}" method="post" enctype="multipart/form-data">
+                <div class="modal-body p-4">
+                    <p class="mb-3">Applying for <strong th:text="${job.title}">Job Title</strong> at <span th:text="${job.company}">Company</span></p>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Upload Resume / CV (PDF, DOCX)</label>
+                        <input type="file" name="resumeFile" class="form-control" accept=".pdf,.doc,.docx">
+                        <div class="form-text">Max file size: 10MB. Accepted formats: PDF, DOCX, DOC.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success px-4 fw-semibold">Confirm & Submit</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
