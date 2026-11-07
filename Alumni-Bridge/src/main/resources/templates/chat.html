@@ -17,12 +17,13 @@ body {
 }
 
 .chat-box {
-	height: 420px;
+	height: 440px;
 	overflow-y: auto;
 	background: #ffffff;
-	padding: 15px;
+	padding: 16px;
 	border-radius: 12px;
 	border: 1px solid #e9ecef;
+	scroll-behavior: smooth;
 }
 
 /* MESSAGE ALIGNMENT */
@@ -45,6 +46,7 @@ body {
 	display: inline-block;
 	max-width: 75%;
 	text-align: left;
+	word-break: break-word;
 }
 
 .bubble-right {
@@ -55,6 +57,7 @@ body {
 	display: inline-block;
 	max-width: 75%;
 	text-align: left;
+	word-break: break-word;
 }
 
 /* TIME + STATUS */
@@ -69,6 +72,13 @@ body {
 	font-size: 11px;
 	color: #0d6efd;
 }
+
+.typing-indicator {
+	font-size: 0.8rem;
+	color: #6c757d;
+	margin-bottom: 8px;
+	display: none;
+}
 </style>
 </head>
 
@@ -77,7 +87,7 @@ body {
 	<!-- NAVBAR -->
 	<div th:replace="~{fragments/navbar :: navbar}"></div>
 
-	<div class="container col-md-6 mt-3">
+	<div class="container col-md-6 mt-3 mb-4">
 
 		<div class="card shadow p-3 border-0 rounded-4">
 
@@ -87,20 +97,21 @@ body {
 					<a href="/messages" class="btn btn-sm btn-outline-secondary me-2">⬅</a>
 					<div>
 						<h5 class="mb-0 fw-bold" th:text="${receiver.name}">Partner</h5>
-						<small class="text-muted" th:text="${receiver.role}">ALUMNI</small>
+						<small class="text-muted" th:text="${receiver.role == 'ALUMNI' ? '👨‍💼 Alumni' : '🎓 Student'}">ALUMNI</small>
+						<span class="badge bg-success-subtle text-success border ms-2" style="font-size: 10px;">Active</span>
 					</div>
 				</div>
 				<a th:href="@{'/view-user/' + ${receiver.id}}" class="btn btn-sm btn-outline-primary">View Profile</a>
 			</div>
 
 			<!-- CHAT AREA -->
-			<div class="chat-box mt-3 mb-3">
+			<div class="chat-box mt-3 mb-3" id="chatBox">
 
-				<div th:if="${#lists.isEmpty(messages)}" class="text-center text-muted my-5">
+				<div th:if="${#lists.isEmpty(messages)}" class="text-center text-muted my-5" id="emptyPlaceholder">
 					<p>No messages yet. Say hello to <span th:text="${receiver.name}"></span>! 👋</p>
 				</div>
 
-				<div th:each="msg : ${messages}">
+				<div th:each="msg : ${messages}" th:attr="data-msg-id=${msg.id}">
 
 					<!-- RECEIVED MESSAGE -->
 					<div th:if="${msg.sender != null and msg.sender.id == receiver.id}" class="msg-left">
@@ -126,14 +137,20 @@ body {
 
 			</div>
 
+			<!-- ERROR TOAST / BANNER -->
+			<div id="chatAlert" class="alert alert-danger py-1 small text-center d-none" role="alert"></div>
+
 			<!-- INPUT -->
-			<form th:action="@{/send-message}" method="post">
-				<input type="hidden" name="receiverId" th:value="${receiver.id}">
+			<form id="chatForm" th:action="@{/send-message}" method="post">
+				<input type="hidden" id="receiverId" name="receiverId" th:value="${receiver.id}">
 
 				<div class="input-group">
-					<input type="text" name="content" class="form-control"
+					<input type="text" id="messageInput" name="content" class="form-control"
 						placeholder="Type a message..." required autocomplete="off">
-					<button class="btn btn-primary px-4">Send</button>
+					<button type="submit" id="sendBtn" class="btn btn-primary px-4 fw-semibold">
+						<span id="btnText">Send</span>
+						<span id="btnSpinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
+					</button>
 				</div>
 			</form>
 
@@ -141,17 +158,158 @@ body {
 
 	</div>
 
-	<!-- AUTO SCROLL FIX -->
+	<!-- REAL-TIME ASYNC MESSAGING SCRIPT -->
 	<script>
-		const chatBox = document.querySelector('.chat-box');
-		if (chatBox) {
-			chatBox.scrollTop = chatBox.scrollHeight;
+		const chatBox = document.getElementById('chatBox');
+		const chatForm = document.getElementById('chatForm');
+		const messageInput = document.getElementById('messageInput');
+		const receiverId = document.getElementById('receiverId').value;
+		const sendBtn = document.getElementById('sendBtn');
+		const btnText = document.getElementById('btnText');
+		const btnSpinner = document.getElementById('btnSpinner');
+		const chatAlert = document.getElementById('chatAlert');
+
+		// Track rendered message IDs to avoid duplicates
+		const renderedMessageIds = new Set();
+		document.querySelectorAll('[data-msg-id]').forEach(el => {
+			const id = el.getAttribute('data-msg-id');
+			if (id) renderedMessageIds.add(parseInt(id, 10));
+		});
+
+		function scrollToBottom(smooth = true) {
+			if (chatBox) {
+				chatBox.scrollTo({
+					top: chatBox.scrollHeight,
+					behavior: smooth ? 'smooth' : 'auto'
+				});
+			}
 		}
+
+		// Initial scroll to bottom
+		scrollToBottom(false);
+
+		function createMessageElement(msg) {
+			const wrapper = document.createElement('div');
+			wrapper.setAttribute('data-msg-id', msg.id);
+
+			const msgDiv = document.createElement('div');
+			msgDiv.className = msg.mine ? 'msg-right' : 'msg-left';
+
+			const bubble = document.createElement('div');
+			bubble.className = msg.mine ? 'bubble-right' : 'bubble-left';
+			bubble.textContent = msg.content; // textContent prevents XSS injection
+
+			const br = document.createElement('br');
+
+			const timeSpan = document.createElement('span');
+			timeSpan.className = 'time';
+			timeSpan.textContent = msg.timestamp || '';
+
+			msgDiv.appendChild(bubble);
+			msgDiv.appendChild(br);
+			msgDiv.appendChild(timeSpan);
+
+			if (msg.mine) {
+				const statusSpan = document.createElement('span');
+				statusSpan.className = 'status ms-1';
+				statusSpan.textContent = msg.seen ? '✔✔ Seen' : '✔ Sent';
+				msgDiv.appendChild(statusSpan);
+			}
+
+			wrapper.appendChild(msgDiv);
+			return wrapper;
+		}
+
+		// AJAX SEND MESSAGE (Without Page Reload)
+		chatForm.addEventListener('submit', async function(e) {
+			e.preventDefault();
+			const content = messageInput.value.trim();
+			if (!content) return;
+
+			// UI state: sending
+			sendBtn.disabled = true;
+			btnText.classList.add('d-none');
+			btnSpinner.classList.remove('d-none');
+			chatAlert.classList.add('d-none');
+
+			try {
+				const params = new URLSearchParams();
+				params.append('receiverId', receiverId);
+				params.append('content', content);
+
+				const response = await fetch('/api/messages/send', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded'
+					},
+					body: params
+				});
+
+				if (!response.ok) {
+					throw new Error('Failed to send message (' + response.status + ')');
+				}
+
+				const newMsg = await response.json();
+				if (!renderedMessageIds.has(newMsg.id)) {
+					renderedMessageIds.add(newMsg.id);
+
+					const emptyPlaceholder = document.getElementById('emptyPlaceholder');
+					if (emptyPlaceholder) emptyPlaceholder.remove();
+
+					chatBox.appendChild(createMessageElement(newMsg));
+					scrollToBottom(true);
+				}
+
+				messageInput.value = '';
+				messageInput.focus();
+			} catch (err) {
+				console.error('Send error:', err);
+				chatAlert.textContent = 'Could not deliver message. Please check your connection.';
+				chatAlert.classList.remove('d-none');
+			} finally {
+				sendBtn.disabled = false;
+				btnText.classList.remove('d-none');
+				btnSpinner.classList.add('d-none');
+			}
+		});
+
+		// BACKGROUND POLLING FOR INCOMING MESSAGES (Every 3.5s)
+		async function pollMessages() {
+			if (document.hidden) return; // Save bandwidth when tab is backgrounded
+
+			try {
+				const response = await fetch('/api/messages/' + receiverId);
+				if (!response.ok) return;
+
+				const messages = await response.json();
+				let hasNewMessages = false;
+
+				messages.forEach(msg => {
+					if (!renderedMessageIds.has(msg.id)) {
+						renderedMessageIds.add(msg.id);
+
+						const emptyPlaceholder = document.getElementById('emptyPlaceholder');
+						if (emptyPlaceholder) emptyPlaceholder.remove();
+
+						chatBox.appendChild(createMessageElement(msg));
+						hasNewMessages = true;
+					}
+				});
+
+				if (hasNewMessages) {
+					scrollToBottom(true);
+				}
+			} catch (e) {
+				// Silently retry on next poll interval
+			}
+		}
+
+		const pollInterval = setInterval(pollMessages, 3500);
+		window.addEventListener('beforeunload', () => clearInterval(pollInterval));
 	</script>
 
 	<!-- BOOTSTRAP -->
-	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

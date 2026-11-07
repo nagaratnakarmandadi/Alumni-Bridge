@@ -18,14 +18,19 @@ public class AuthController {
 
 	// REGISTER PAGE
 	@GetMapping("/register")
-	public String showRegister(Model model) {
+	public String showRegister(@RequestParam(required = false) String redirect, Model model) {
 		model.addAttribute("user", new User());
+		if (redirect != null && redirect.startsWith("/") && !redirect.startsWith("//")) {
+			model.addAttribute("redirect", redirect);
+		}
 		return "register";
 	}
 
 	// REGISTER SAVE with privilege escalation protection & duplicate email handling
 	@PostMapping("/register")
-	public String register(@ModelAttribute User user, Model model) {
+	public String register(@ModelAttribute User user, 
+						   @RequestParam(required = false) String redirect, 
+						   Model model) {
 		try {
 			// Restrict registration roles strictly to STUDENT or ALUMNI
 			if (!"ALUMNI".equals(user.getRole())) {
@@ -48,9 +53,17 @@ public class AuthController {
 			}
 
 			service.registerUser(user);
-			return "redirect:/login?registered=true";
+
+			String target = "/login?registered=true";
+			if (redirect != null && redirect.startsWith("/") && !redirect.startsWith("//")) {
+				target += "&redirect=" + java.net.URLEncoder.encode(redirect, java.nio.charset.StandardCharsets.UTF_8);
+			}
+			return "redirect:" + target;
 		} catch (IllegalArgumentException e) {
 			model.addAttribute("error", e.getMessage());
+			if (redirect != null && redirect.startsWith("/") && !redirect.startsWith("//")) {
+				model.addAttribute("redirect", redirect);
+			}
 			return "register";
 		}
 	}
@@ -59,6 +72,8 @@ public class AuthController {
 	@GetMapping("/login")
 	public String showLogin(@RequestParam(required = false) String registered,
 							@RequestParam(required = false) String error,
+							@RequestParam(required = false) String reason,
+							@RequestParam(required = false) String redirect,
 							Model model) {
 		if ("true".equals(registered)) {
 			model.addAttribute("success", "Account created successfully! Please sign in.");
@@ -66,13 +81,22 @@ public class AuthController {
 		if ("blocked".equals(error)) {
 			model.addAttribute("error", "Your account is deactivated. Please contact an administrator.");
 		}
+		if ("auth_required".equals(reason)) {
+			model.addAttribute("info", "Please sign in or register to access the Alumni Directory, career jobs, and community events.");
+		}
+		if (redirect != null && redirect.startsWith("/") && !redirect.startsWith("//")) {
+			model.addAttribute("redirect", redirect);
+		}
 		return "login";
 	}
 
-	// LOGIN PROCESS with blocked check
+	// LOGIN PROCESS with blocked check and safe target redirection
 	@PostMapping("/login")
-	public String loginUser(@RequestParam String email, @RequestParam String password, HttpSession session,
-			Model model) {
+	public String loginUser(@RequestParam String email, 
+							@RequestParam String password,
+							@RequestParam(required = false) String redirect,
+							HttpSession session,
+							Model model) {
 
 		User existingUser = service.findByEmail(email);
 		if (existingUser != null && Boolean.TRUE.equals(existingUser.getBlocked())) {
@@ -85,6 +109,10 @@ public class AuthController {
 		if (user != null) {
 			session.setAttribute("loggedUser", user);
 
+			if (redirect != null && redirect.startsWith("/") && !redirect.startsWith("//")) {
+				return "redirect:" + redirect;
+			}
+
 			if ("ADMIN".equals(user.getRole())) {
 				return "redirect:/admin/dashboard";
 			} else {
@@ -93,6 +121,9 @@ public class AuthController {
 		}
 
 		model.addAttribute("error", "Invalid credentials");
+		if (redirect != null && redirect.startsWith("/") && !redirect.startsWith("//")) {
+			model.addAttribute("redirect", redirect);
+		}
 		return "login";
 	}
 

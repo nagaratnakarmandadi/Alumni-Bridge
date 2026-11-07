@@ -23,6 +23,9 @@ public class AlumniController {
 	@GetMapping("/alumni")
 	public String viewAlumni(@RequestParam(required = false) String keyword,
 			@RequestParam(required = false) String role, 
+			@RequestParam(required = false) String company,
+			@RequestParam(required = false) String skill,
+			@RequestParam(required = false) String gradYear,
 			@RequestParam(required = false) String error,
 			Model model, HttpSession session) {
 
@@ -31,11 +34,14 @@ public class AlumniController {
 			return "redirect:/login";
 		}
 
-		List<User> users = userService.searchUsers(keyword, role, currentUser.getId());
+		List<User> users = userService.searchUsers(keyword, role, company, skill, gradYear, currentUser.getId());
 
 		model.addAttribute("users", users);
 		model.addAttribute("keyword", keyword != null ? keyword : "");
 		model.addAttribute("role", role != null ? role : "");
+		model.addAttribute("company", company != null ? company : "");
+		model.addAttribute("skill", skill != null ? skill : "");
+		model.addAttribute("gradYear", gradYear != null ? gradYear : "");
 		if ("not_found".equals(error)) {
 			model.addAttribute("errorMessage", "The requested user profile was not found.");
 		}

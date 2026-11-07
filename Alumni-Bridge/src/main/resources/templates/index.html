@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Alumni Bridge</title>
+<title>Alumni Bridge | Official Collegiate Alumni Network</title>
 
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
@@ -11,12 +11,23 @@
 
 <style>
 body {
-	font-family: 'Segoe UI', sans-serif;
+	font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+	color: #212529;
 }
 
 /* NAVBAR */
 .navbar {
-	background: rgba(0, 0, 0, 0.9);
+	background: rgba(15, 23, 42, 0.95);
+	backdrop-filter: blur(8px);
+}
+
+.brand-badge {
+	font-size: 0.72rem;
+	background: rgba(255, 255, 255, 0.15);
+	padding: 2px 8px;
+	border-radius: 12px;
+	vertical-align: middle;
+	margin-left: 6px;
 }
 
 /* HERO */
@@ -24,101 +35,130 @@ body {
 	margin-top: 80px;
 }
 
-/* carousel */
 .carousel-item img {
-	height: 70vh;
+	height: 68vh;
 	object-fit: cover;
-	border-radius: 12px;
+	border-radius: 16px;
 }
 
-/* overlay FIXED */
 .hero-overlay {
 	position: absolute;
 	width: 100%;
-	height: 70vh;
-	background: rgba(0, 0, 0, 0.5);
-	border-radius: 12px;
+	height: 68vh;
+	background: linear-gradient(180deg, rgba(15, 23, 42, 0.4) 0%, rgba(15, 23, 42, 0.8) 100%);
+	border-radius: 16px;
 	z-index: 1;
-	pointer-events: none; /* 🔥 IMPORTANT */
+	pointer-events: none;
 }
 
-/* caption */
 .carousel-caption {
 	z-index: 2;
-	bottom: 25%;
+	bottom: 22%;
 }
 
-/* sections */
+/* STATS BAR */
+.stats-bar {
+	background: #ffffff;
+	border-radius: 16px;
+	margin-top: -40px;
+	position: relative;
+	z-index: 3;
+	border: 1px solid #e2e8f0;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.stat-item {
+	padding: 24px 15px;
+	text-align: center;
+}
+
+.stat-num {
+	font-size: 2.2rem;
+	font-weight: 800;
+	color: #0d6efd;
+	margin-bottom: 2px;
+}
+
+.stat-label {
+	font-size: 0.85rem;
+	color: #64748b;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+/* SECTIONS */
 .section {
 	padding: 70px 20px;
 }
 
-/* cards */
-.card {
-	border: none;
-	border-radius: 15px;
-	transition: 0.3s;
+.feature-card {
+	border: 1px solid #e2e8f0;
+	border-radius: 16px;
+	transition: transform 0.25s ease, box-shadow 0.25s ease;
+	background: #ffffff;
+	height: 100%;
 }
 
-.card:hover {
-	transform: translateY(-8px);
+.feature-card:hover {
+	transform: translateY(-6px);
+	box-shadow: 0 12px 28px rgba(0, 0, 0, 0.07);
 }
 
-/* steps */
-.step {
-	font-size: 40px;
+.icon-box {
+	font-size: 32px;
+	margin-bottom: 15px;
 }
 
-/* footer */
+/* FOOTER */
 footer {
-	background: #111;
-	color: #aaa;
+	background: #0f172a;
+	color: #94a3b8;
 }
 
 footer a:hover {
-	color: #0d6efd !important;
+	color: #38bdf8 !important;
 }
 </style>
-
 </head>
 
 <body>
 
 	<!-- 🔹 NAVBAR -->
-	<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+	<nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow-sm">
 		<div class="container">
-			<a class="navbar-brand fw-bold" href="/">🎓 Alumni Bridge</a>
+			<a class="navbar-brand fw-bold d-flex align-items-center" href="/">
+				<span>🎓 Alumni Bridge</span>
+				<span class="brand-badge text-light">Campus Network</span>
+			</a>
 
-			<button class="navbar-toggler" data-bs-toggle="collapse"
-				data-bs-target="#nav">
+			<button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav">
 				<span class="navbar-toggler-icon"></span>
 			</button>
 
 			<div class="collapse navbar-collapse" id="nav">
 				<ul class="navbar-nav ms-auto align-items-center">
-					<li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
 					<li class="nav-item"><a class="nav-link" href="#about">About</a></li>
-					<li class="nav-item ms-3"><a href="/login"
-						class="btn btn-outline-light btn-sm me-2">Sign in</a> <a
-						href="/register" class="btn btn-primary btn-sm">Register</a></li>
+					<li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+					<li class="nav-item"><a class="nav-link" href="#how-it-works">How It Works</a></li>
+					<li class="nav-item ms-3">
+						<a href="/login" class="btn btn-outline-light btn-sm me-2 px-3 fw-semibold">Sign in</a>
+						<a href="/register" class="btn btn-primary btn-sm px-3 fw-semibold">Join Network</a>
+					</li>
 				</ul>
 			</div>
 		</div>
 	</nav>
 
-	<!-- 🔹 CAROUSEL -->
+	<!-- 🔹 HERO CAROUSEL -->
 	<div class="container hero-container">
 
 		<div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
 
-			<!-- indicators -->
 			<div class="carousel-indicators">
-				<button type="button" data-bs-target="#heroCarousel"
-					data-bs-slide-to="0" class="active"></button>
-				<button type="button" data-bs-target="#heroCarousel"
-					data-bs-slide-to="1"></button>
-				<button type="button" data-bs-target="#heroCarousel"
-					data-bs-slide-to="2"></button>
+				<button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+				<button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+				<button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
 			</div>
 
 			<div class="hero-overlay"></div>
@@ -126,50 +166,44 @@ footer a:hover {
 			<div class="carousel-inner">
 
 				<div class="carousel-item active">
-					<img
-						src="https://images.unsplash.com/photo-1523580494863-6f3031224c94"
-						class="d-block w-100">
-					<div class="carousel-caption text-start">
-						<h1 class="fw-bold">Connect with Alumni</h1>
-						<p class="lead">Build strong professional networks</p>
-						<a href="/register" class="btn btn-primary me-2">Get Started</a> <a
-							href="/alumni" class="btn btn-outline-light">Explore</a>
+					<img src="https://images.unsplash.com/photo-1523580494863-6f3031224c94" class="d-block w-100" alt="Alumni Networking">
+					<div class="carousel-caption text-start col-lg-8">
+						<span class="badge bg-primary px-3 py-2 mb-2 rounded-pill">Verified Collegiate Community</span>
+						<h1 class="fw-bold display-5">Connect with Our College Alumni</h1>
+						<p class="lead">Build lifelong professional ties with verified graduates working across global leaders in technology, engineering, and business.</p>
+						<a href="/register" class="btn btn-primary px-4 py-2 me-2 fw-semibold">Get Started</a>
+						<a href="/alumni" class="btn btn-outline-light px-4 py-2 fw-semibold">Explore Directory</a>
 					</div>
 				</div>
 
 				<div class="carousel-item">
-					<img
-						src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d"
-						class="d-block w-100">
-					<div class="carousel-caption text-start">
-						<h1 class="fw-bold">Find Job Opportunities</h1>
-						<p class="lead">Get referrals from alumni</p>
-						<a href="/jobs" class="btn btn-success me-2">View Jobs</a> <a
-							href="/login" class="btn btn-outline-light">Login</a>
+					<img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d" class="d-block w-100" alt="Job Opportunities">
+					<div class="carousel-caption text-start col-lg-8">
+						<span class="badge bg-success px-3 py-2 mb-2 rounded-pill">Career Referrals</span>
+						<h1 class="fw-bold display-5">Unlock Direct Job Referrals</h1>
+						<p class="lead">Discover exclusive full-time openings, internships, and off-campus opportunities posted by alumni from your college.</p>
+						<a href="/jobs" class="btn btn-success px-4 py-2 me-2 fw-semibold">View Job Board</a>
+						<a href="/login" class="btn btn-outline-light px-4 py-2 fw-semibold">Sign In</a>
 					</div>
 				</div>
 
 				<div class="carousel-item">
-					<img
-						src="https://images.unsplash.com/photo-1519389950473-47ba0277781c"
-						class="d-block w-100">
-					<div class="carousel-caption text-start">
-						<h1 class="fw-bold">Grow Your Career</h1>
-						<p class="lead">Mentorship & networking</p>
-						<a href="/register" class="btn btn-primary me-2">Join Now</a>
+					<img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c" class="d-block w-100" alt="Mentorship">
+					<div class="carousel-caption text-start col-lg-8">
+						<span class="badge bg-info text-dark px-3 py-2 mb-2 rounded-pill">1-on-1 Guidance</span>
+						<h1 class="fw-bold display-5">Mentorship for Every Career Stage</h1>
+						<p class="lead">Receive resume reviews, placement tips, and industry insights directly from seniors who walked the exact same campus halls.</p>
+						<a href="/register" class="btn btn-primary px-4 py-2 me-2 fw-semibold">Join Today</a>
 					</div>
 				</div>
 
 			</div>
 
-			<!-- controls -->
-			<button class="carousel-control-prev" type="button"
-				data-bs-target="#heroCarousel" data-bs-slide="prev">
+			<button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
 				<span class="carousel-control-prev-icon"></span>
 			</button>
 
-			<button class="carousel-control-next" type="button"
-				data-bs-target="#heroCarousel" data-bs-slide="next">
+			<button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
 				<span class="carousel-control-next-icon"></span>
 			</button>
 
@@ -177,48 +211,97 @@ footer a:hover {
 
 	</div>
 
+	<!-- 🔹 IMPACT STATS BAR -->
+	<div class="container">
+		<div class="stats-bar p-2">
+			<div class="row g-0 text-center">
+				<div class="col-6 col-md-3 border-end">
+					<div class="stat-item">
+						<div class="stat-num">1,200+</div>
+						<div class="stat-label">Graduates & Students</div>
+					</div>
+				</div>
+				<div class="col-6 col-md-3 border-end">
+					<div class="stat-item">
+						<div class="stat-num">150+</div>
+						<div class="stat-label">Hiring Companies</div>
+					</div>
+				</div>
+				<div class="col-6 col-md-3 border-end">
+					<div class="stat-item">
+						<div class="stat-num">95%</div>
+						<div class="stat-label">Referral Response Rate</div>
+					</div>
+				</div>
+				<div class="col-6 col-md-3">
+					<div class="stat-item">
+						<div class="stat-num">100%</div>
+						<div class="stat-label">Verified Institution Network</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- 🔹 ABOUT -->
 	<section id="about" class="section text-center">
-		<div class="container">
-			<h2>What is Alumni Bridge?</h2>
-			<p class="text-muted mt-3">Alumni Bridge connects students with
-				alumni for mentorship, job referrals, networking, and events to help
-				students grow professionally.</p>
+		<div class="container col-lg-8">
+			<span class="text-primary fw-semibold small text-uppercase">Institutional Purpose</span>
+			<h2 class="fw-bold mt-2">What is Alumni Bridge?</h2>
+			<p class="text-muted mt-3 fs-5">
+				Alumni Bridge is the official collegiate community bridging enrolled students with accomplished alumni. 
+				Whether you are seeking your first software engineering job, seeking career advice, or looking to hire top talent from your alma mater, 
+				Alumni Bridge brings the entire college network into one dedicated home.
+			</p>
+			<!-- DEPARTMENT BADGES -->
+			<div class="d-flex flex-wrap justify-content-center gap-2 mt-4">
+				<span class="badge bg-light text-secondary border px-3 py-2">Computer Science & Engineering</span>
+				<span class="badge bg-light text-secondary border px-3 py-2">Electronics & Communication</span>
+				<span class="badge bg-light text-secondary border px-3 py-2">Information Technology</span>
+				<span class="badge bg-light text-secondary border px-3 py-2">Mechanical Engineering</span>
+				<span class="badge bg-light text-secondary border px-3 py-2">Civil Engineering</span>
+				<span class="badge bg-light text-secondary border px-3 py-2">Management & MBA</span>
+			</div>
 		</div>
 	</section>
 
 	<!-- 🔹 FEATURES -->
 	<section id="features" class="section bg-light text-center">
 		<div class="container">
-			<h2 class="mb-5">Features</h2>
+			<span class="text-primary fw-semibold small text-uppercase">Platform Pillars</span>
+			<h2 class="fw-bold mt-1 mb-5">Designed for Students and Alumni Alike</h2>
 
-			<div class="row g-4">
+			<div class="row g-4 text-start">
 
-				<div class="col-md-3">
-					<div class="card shadow p-4">
-						<h5>👥 Alumni Network</h5>
-						<p>Connect with alumni</p>
+				<div class="col-md-6 col-lg-3">
+					<div class="feature-card p-4">
+						<div class="icon-box">👥</div>
+						<h5 class="fw-bold">Alumni Directory</h5>
+						<p class="text-muted small">Search and discover alumni by current company, technology skills, department, and graduation year.</p>
 					</div>
 				</div>
 
-				<div class="col-md-3">
-					<div class="card shadow p-4">
-						<h5>💼 Jobs</h5>
-						<p>Apply for jobs</p>
+				<div class="col-md-6 col-lg-3">
+					<div class="feature-card p-4">
+						<div class="icon-box">💼</div>
+						<h5 class="fw-bold">Career Board</h5>
+						<p class="text-muted small">Apply for off-campus openings and internships directly with your attached resume and track your application status.</p>
 					</div>
 				</div>
 
-				<div class="col-md-3">
-					<div class="card shadow p-4">
-						<h5>💬 Messaging</h5>
-						<p>Chat with alumni</p>
+				<div class="col-md-6 col-lg-3">
+					<div class="feature-card p-4">
+						<div class="icon-box">💬</div>
+						<h5 class="fw-bold">Real-Time Messaging</h5>
+						<p class="text-muted small">Engage in fast, 1-on-1 private messaging without page reloads to request referrals, resume reviews, or tips.</p>
 					</div>
 				</div>
 
-				<div class="col-md-3">
-					<div class="card shadow p-4">
-						<h5>📅 Events</h5>
-						<p>Attend events</p>
+				<div class="col-md-6 col-lg-3">
+					<div class="feature-card p-4">
+						<div class="icon-box">📅</div>
+						<h5 class="fw-bold">Campus Events</h5>
+						<p class="text-muted small">RSVP for alumni webinars, placement mock interview workshops, guest lectures, and annual campus reunions.</p>
 					</div>
 				</div>
 
@@ -227,106 +310,99 @@ footer a:hover {
 	</section>
 
 	<!-- 🔹 HOW IT WORKS -->
-	<section class="section text-center">
+	<section id="how-it-works" class="section text-center">
 		<div class="container">
-			<h2 class="mb-5">How It Works</h2>
+			<span class="text-primary fw-semibold small text-uppercase">Simple Steps</span>
+			<h2 class="fw-bold mt-1 mb-5">How Alumni Bridge Works</h2>
 
-			<div class="row">
+			<div class="row g-4">
 				<div class="col-md-4">
-					<div class="step">1️⃣</div>
-					<h5>Register</h5>
-					<p>Create your account</p>
+					<div class="p-4 border rounded-4 bg-white h-100 shadow-sm">
+						<div class="display-6 mb-3">1️⃣</div>
+						<h5 class="fw-bold">Register with College Email</h5>
+						<p class="text-muted small">Create your profile as a Student or Alumni in under 60 seconds with your branch and graduation batch.</p>
+					</div>
 				</div>
 
 				<div class="col-md-4">
-					<div class="step">2️⃣</div>
-					<h5>Connect</h5>
-					<p>Explore alumni</p>
+					<div class="p-4 border rounded-4 bg-white h-100 shadow-sm">
+						<div class="display-6 mb-3">2️⃣</div>
+						<h5 class="fw-bold">Discover & Network</h5>
+						<p class="text-muted small">Search the directory by company name or technical skill, review profiles, and initiate conversations.</p>
+					</div>
 				</div>
 
 				<div class="col-md-4">
-					<div class="step">3️⃣</div>
-					<h5>Grow</h5>
-					<p>Apply & learn</p>
+					<div class="p-4 border rounded-4 bg-white h-100 shadow-sm">
+						<div class="display-6 mb-3">3️⃣</div>
+						<h5 class="fw-bold">Apply, Learn & Give Back</h5>
+						<p class="text-muted small">Submit applications with your resume, attend community workshops, and post opportunities for fellow juniors.</p>
+					</div>
 				</div>
 			</div>
 		</div>
 	</section>
 
 	<!-- 🔹 FOOTER -->
-	<footer style="background: #111; color: #ccc;">
-
+	<footer>
 		<div class="container py-5">
+			<div class="row g-4">
 
-			<div class="row">
-
-				<!-- BRAND -->
-				<div class="col-md-4 mb-3">
-					<h5 class="text-white">🎓 Alumni Bridge</h5>
-					<p>Connecting students and alumni to build strong professional
-						networks, share opportunities, and grow together.</p>
+				<div class="col-md-4">
+					<h5 class="text-white fw-bold">🎓 Alumni Bridge</h5>
+					<p class="small">The official alumni engagement and career network connecting students, faculty, and graduates for career advancement and community.</p>
+					<p class="small mb-0">Official Alumni Relations Cell</p>
 				</div>
 
-				<!-- QUICK LINKS -->
-				<div class="col-md-2 mb-3">
-					<h6 class="text-white">Quick Links</h6>
-					<ul class="list-unstyled">
-						<li><a href="/" class="text-decoration-none text-muted">Home</a></li>
-						<li><a href="/alumni" class="text-decoration-none text-muted">Alumni</a></li>
-						<li><a href="/jobs" class="text-decoration-none text-muted">Jobs</a></li>
-						<li><a href="/events" class="text-decoration-none text-muted">Events</a></li>
+				<div class="col-md-2">
+					<h6 class="text-white fw-semibold mb-3">Quick Links</h6>
+					<ul class="list-unstyled small">
+						<li class="mb-2"><a href="/" class="text-decoration-none text-muted">Home</a></li>
+						<li class="mb-2"><a href="/alumni" class="text-decoration-none text-muted">Alumni Directory</a></li>
+						<li class="mb-2"><a href="/jobs" class="text-decoration-none text-muted">Career Opportunities</a></li>
+						<li class="mb-2"><a href="/events" class="text-decoration-none text-muted">Campus Events</a></li>
 					</ul>
 				</div>
 
-				<!-- FEATURES -->
-				<div class="col-md-3 mb-3">
-					<h6 class="text-white">Features</h6>
-					<ul class="list-unstyled">
-						<li>👥 Networking</li>
-						<li>💼 Job Referrals</li>
-						<li>📅 Events</li>
-						<li>💬 Messaging</li>
+				<div class="col-md-3">
+					<h6 class="text-white fw-semibold mb-3">Collegiate Support</h6>
+					<ul class="list-unstyled small">
+						<li class="mb-2">Placement & Career Development Cell</li>
+						<li class="mb-2">Departmental Alumni Coordinators</li>
+						<li class="mb-2">Institutional Verification Center</li>
 					</ul>
 				</div>
 
-				<!-- CONTACT -->
-				<div class="col-md-3 mb-3">
-					<h6 class="text-white">Contact</h6>
-					<p class="mb-1">📧 support@alumnibridge.com</p>
-					<p class="mb-1">📍 India</p>
-
-					<!-- SOCIAL -->
-					<div>
-						<a href="#" class="text-decoration-none text-light me-2">🌐</a> <a
-							href="#" class="text-decoration-none text-light me-2">🔗</a> <a
-							href="#" class="text-decoration-none text-light">🐦</a>
+				<div class="col-md-3">
+					<h6 class="text-white fw-semibold mb-3">Contact & Support</h6>
+					<p class="small mb-1">📧 support@alumnibridge.com</p>
+					<p class="small mb-1">📍 Campus Administration Building, India</p>
+					<div class="mt-3">
+						<a href="/login" class="btn btn-outline-light btn-sm me-2">Sign In</a>
+						<a href="/register" class="btn btn-primary btn-sm">Sign Up</a>
 					</div>
 				</div>
 
 			</div>
 
-			<hr style="border-color: #444;">
+			<hr style="border-color: #334155;" class="my-4">
 
-			<!-- COPYRIGHT -->
-			<div class="text-center">
-				<p class="mb-0">© 2026 Alumni Bridge | Built with ❤️ by Yaswanth
-				</p>
+			<div class="d-flex justify-content-between align-items-center flex-wrap small">
+				<p class="mb-0">© 2026 Alumni Bridge. All rights reserved.</p>
+				<p class="mb-0 text-muted">Empowering collegiate networks</p>
 			</div>
-
 		</div>
-
 	</footer>
 
-	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 	<script>
 		window.addEventListener("load", function() {
 			new bootstrap.Carousel(document.getElementById('heroCarousel'), {
-				interval : 2000,
-				ride : 'carousel',
-				pause : 'hover',
-				wrap : true
+				interval: 3500,
+				ride: 'carousel',
+				pause: 'hover',
+				wrap: true
 			});
 		});
 	</script>

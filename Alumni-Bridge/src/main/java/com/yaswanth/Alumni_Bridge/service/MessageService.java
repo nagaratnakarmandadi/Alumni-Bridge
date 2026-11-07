@@ -16,11 +16,11 @@ public class MessageService {
 	@Autowired
 	private MessageRepository repo;
 
-	public void sendMessage(User sender, User receiver, String content) {
-		if (sender == null || receiver == null) return;
-		if (sender.getId().equals(receiver.getId())) return;
-		if (content == null || content.trim().isEmpty()) return;
-		if (Boolean.TRUE.equals(sender.getBlocked()) || Boolean.TRUE.equals(receiver.getBlocked())) return;
+	public Message sendMessage(User sender, User receiver, String content) {
+		if (sender == null || receiver == null) return null;
+		if (sender.getId().equals(receiver.getId())) return null;
+		if (content == null || content.trim().isEmpty()) return null;
+		if (Boolean.TRUE.equals(sender.getBlocked()) || Boolean.TRUE.equals(receiver.getBlocked())) return null;
 
 		Message msg = new Message();
 		msg.setSender(sender);
@@ -29,7 +29,7 @@ public class MessageService {
 		msg.setTimestamp(LocalDateTime.now());
 		msg.setSeen(false);
 
-		repo.save(msg);
+		return repo.save(msg);
 	}
 
 	public List<Message> getInbox(User user) {

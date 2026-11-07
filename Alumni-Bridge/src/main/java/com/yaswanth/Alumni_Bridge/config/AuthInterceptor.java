@@ -7,6 +7,9 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 @Component
 public class AuthInterceptor implements HandlerInterceptor {
 
@@ -26,7 +29,10 @@ public class AuthInterceptor implements HandlerInterceptor {
         User user = (session != null) ? (User) session.getAttribute("loggedUser") : null;
 
         if (user == null) {
-            response.sendRedirect("/login");
+            String query = request.getQueryString();
+            String target = (query != null && !query.isBlank()) ? path + "?" + query : path;
+            String encodedTarget = URLEncoder.encode(target, StandardCharsets.UTF_8);
+            response.sendRedirect("/login?redirect=" + encodedTarget + "&reason=auth_required");
             return false;
         }
 

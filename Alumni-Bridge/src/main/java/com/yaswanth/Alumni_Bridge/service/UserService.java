@@ -99,26 +99,20 @@ public class UserService {
 		return repo.countByRole("ALUMNI");
 	}
 
+	// Backwards-compatible 3-arg overload
 	public List<User> searchUsers(String keyword, String role, Long currentUserId) {
-		List<User> users;
+		return searchUsers(keyword, role, null, null, null, currentUserId);
+	}
+
+	// Multi-field search querying name, company, skills, branch, degree, and graduation year
+	public List<User> searchUsers(String keyword, String role, String company, String skill, String gradYear, Long currentUserId) {
 		String cleanKeyword = (keyword != null) ? keyword.trim() : "";
 		String cleanRole = (role != null) ? role.trim() : "";
+		String cleanCompany = (company != null) ? company.trim() : "";
+		String cleanSkill = (skill != null) ? skill.trim() : "";
+		String cleanGradYear = (gradYear != null) ? gradYear.trim() : "";
 
-		if (cleanKeyword.isEmpty() && cleanRole.isEmpty()) {
-			users = repo.findAll();
-		} else if (!cleanKeyword.isEmpty() && !cleanRole.isEmpty()) {
-			users = repo.findByNameContainingIgnoreCaseAndRole(cleanKeyword, cleanRole);
-		} else if (!cleanKeyword.isEmpty()) {
-			users = repo.findByNameContainingIgnoreCase(cleanKeyword);
-		} else {
-			users = repo.findByRole(cleanRole);
-		}
-
-		return users.stream()
-				.filter(u -> currentUserId == null || !u.getId().equals(currentUserId))
-				.filter(u -> !"ADMIN".equals(u.getRole()))
-				.filter(u -> !Boolean.TRUE.equals(u.getBlocked()))
-				.toList();
+		return repo.searchDirectory(cleanKeyword, cleanRole, cleanCompany, cleanSkill, cleanGradYear, currentUserId);
 	}
 
 	public User getUserById(Long id) {

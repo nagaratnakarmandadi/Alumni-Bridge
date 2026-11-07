@@ -22,34 +22,35 @@ body {
 	position: fixed;
 	width: 100%;
 	height: 100%;
-	background: rgba(0, 0, 0, 0.6);
+	background: rgba(0, 0, 0, 0.65);
 }
 
 /* card */
 .auth-card {
-	border-radius: 15px;
-	border: none;
-	backdrop-filter: blur(12px);
-	background: rgba(255, 255, 255, 0.15);
+	border-radius: 16px;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	backdrop-filter: blur(14px);
+	background: rgba(20, 25, 40, 0.65);
 	color: white;
 }
 
 /* input */
 .form-control {
 	border-radius: 10px;
-	background: rgba(255, 255, 255, 0.25);
+	background: rgba(255, 255, 255, 0.15);
 	color: white;
-	border: none;
+	border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .form-control::placeholder {
-	color: #eee;
+	color: #ddd;
 }
 
 .form-control:focus {
-	background: rgba(255, 255, 255, 0.35);
+	background: rgba(255, 255, 255, 0.25);
 	color: white;
-	box-shadow: none;
+	box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+	border-color: #0d6efd;
 }
 
 /* button */
@@ -77,49 +78,56 @@ body {
 	<div
 		class="container d-flex justify-content-center align-items-center vh-100">
 
-		<div class="col-md-4">
+		<div class="col-md-5 col-lg-4">
 
 			<div class="card shadow-lg auth-card p-4">
 
-				<h4 class="text-center mb-2">
+				<h4 class="text-center mb-1">
 					<a href="/" style="text-decoration: none; color: white;"> 🎓
 						Alumni Bridge </a>
 				</h4>
-				<p class="text-center text-light">Sign in to your account</p>
+				<p class="text-center text-light small mb-3">Sign in to your college network</p>
+
+				<!-- INFORMATIONAL BANNER (Guest Redirection) -->
+				<div th:if="${info}" class="alert alert-info py-2 small text-center bg-info text-dark border-0 rounded-3">
+					<span th:text="${info}"></span>
+				</div>
 
 				<!-- SUCCESS NOTIFICATION -->
-				<div th:if="${success}" class="alert alert-success text-center py-2">
+				<div th:if="${success}" class="alert alert-success text-center py-2 small">
 					<span th:text="${success}"></span>
 				</div>
 
 				<!-- ERROR NOTIFICATION -->
-				<div th:if="${error}" class="alert alert-danger text-center py-2">
+				<div th:if="${error}" class="alert alert-danger text-center py-2 small">
 					<span th:text="${error}"></span>
 				</div>
 
 				<!-- FORM -->
 				<form th:action="@{/login}" method="post">
+					<input type="hidden" name="redirect" th:value="${redirect}">
 
 					<input type="email" name="email" class="form-control mb-3"
-						placeholder="Email" required>
+						placeholder="College or Personal Email" required autocomplete="username">
+
 					<div class="mb-3 position-relative">
 						<input type="password" id="password" name="password"
-							class="form-control" placeholder="Password" required> <span
-							onclick="togglePassword()"
+							class="form-control" placeholder="Password" required autocomplete="current-password">
+						<span onclick="togglePassword()"
 							style="position: absolute; right: 15px; top: 10px; cursor: pointer;">
 							👁️ </span>
 					</div>
 
-					<button class="btn btn-primary w-100 btn-auth fw-bold">Sign In</button>
+					<button class="btn btn-primary w-100 btn-auth fw-bold py-2">Sign In</button>
 
 				</form>
 
-				<p class="text-center mt-3">
-					Don’t have an account? <a href="/register" class="link fw-bold">Sign
-						Up</a>
+				<p class="text-center mt-3 mb-1 small">
+					Don’t have an account? 
+					<a th:href="${redirect != null} ? @{'/register?redirect=' + ${redirect}} : @{/register}" class="link fw-bold">Sign Up</a>
 				</p>
 				<div class="text-center mt-2">
-					<a href="/" class="btn btn-outline-light btn-sm">🏠 Home</a>
+					<a href="/" class="btn btn-outline-light btn-sm px-3">🏠 Home</a>
 				</div>
 
 			</div>

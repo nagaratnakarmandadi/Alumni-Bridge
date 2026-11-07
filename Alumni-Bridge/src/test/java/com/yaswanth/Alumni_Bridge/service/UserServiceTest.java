@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -126,5 +127,18 @@ public class UserServiceTest {
         verify(eventRegistrationRepository, times(1)).deleteByUser(sampleUser);
         verify(applicationRepository, times(1)).deleteByUser(sampleUser);
         verify(userRepository, times(1)).delete(sampleUser);
+    }
+
+    @Test
+    void testSearchUsers_MultiField_CallsRepository() {
+        when(userRepository.searchDirectory("Java", "ALUMNI", "Google", "Spring", "2024", 1L))
+                .thenReturn(List.of(sampleUser));
+
+        List<User> results = userService.searchUsers("Java", "ALUMNI", "Google", "Spring", "2024", 1L);
+
+        assertNotNull(results);
+        assertEquals(1, results.size());
+        assertEquals("John Doe", results.get(0).getName());
+        verify(userRepository, times(1)).searchDirectory("Java", "ALUMNI", "Google", "Spring", "2024", 1L);
     }
 }
