@@ -23,48 +23,70 @@ public class AdminController {
     @Autowired
     private EventService eventService;
 
-    // 🔐 ADMIN CHECK
+    @Autowired
+    private ApplicationService appService;
+
     private boolean isAdmin(User user) {
-        return user != null && user.getRole().equals("ADMIN");
+        return user != null && "ADMIN".equals(user.getRole());
     }
 
-    // DASHBOARD
+    // DASHBOARD with analytics
     @GetMapping("/dashboard")
-    public String adminDashboard(HttpSession session) {
+    public String adminDashboard(Model model, HttpSession session) {
         User user = (User) session.getAttribute("loggedUser");
         if (!isAdmin(user)) return "redirect:/dashboard";
+
+        model.addAttribute("totalUsers", userService.getAllUsers().size());
+        model.addAttribute("totalAlumni", userService.countAlumni());
+        model.addAttribute("totalJobs", jobService.getAllJobs().size());
+        model.addAttribute("totalEvents", eventService.getAllEvents().size());
+        model.addAttribute("totalApplications", appService.getAllApplications().size());
+
         return "admin-dashboard";
     }
 
-    // USERS
+    // USERS MANAGEMENT
     @GetMapping("/users")
-    public String users(Model model, HttpSession session) {
+    public String users(@RequestParam(required = false) String error, Model model, HttpSession session) {
         User user = (User) session.getAttribute("loggedUser");
         if (!isAdmin(user)) return "redirect:/dashboard";
 
         model.addAttribute("users", userService.getAllUsers());
+        if ("self_action".equals(error)) {
+            model.addAttribute("errorMessage", "Action denied: You cannot delete or block your own administrator account.");
+        }
         return "admin-users";
     }
 
-    @GetMapping("/delete-user/{id}")
+    @RequestMapping(value = "/delete-user/{id}", method = {RequestMethod.GET, RequestMethod.POST})
     public String deleteUser(@PathVariable Long id, HttpSession session) {
         User user = (User) session.getAttribute("loggedUser");
         if (!isAdmin(user)) return "redirect:/dashboard";
+
+        // Prevent admin self-deletion
+        if (user.getId().equals(id)) {
+            return "redirect:/admin/users?error=self_action";
+        }
 
         userService.deleteUser(id);
         return "redirect:/admin/users";
     }
 
-    @GetMapping("/toggle-block/{id}")
+    @RequestMapping(value = "/toggle-block/{id}", method = {RequestMethod.GET, RequestMethod.POST})
     public String blockUser(@PathVariable Long id, HttpSession session) {
         User user = (User) session.getAttribute("loggedUser");
         if (!isAdmin(user)) return "redirect:/dashboard";
+
+        // Prevent admin self-blocking
+        if (user.getId().equals(id)) {
+            return "redirect:/admin/users?error=self_action";
+        }
 
         userService.toggleBlockUser(id);
         return "redirect:/admin/users";
     }
 
-    // JOBS
+    // JOBS MANAGEMENT
     @GetMapping("/jobs")
     public String jobs(Model model, HttpSession session) {
         User user = (User) session.getAttribute("loggedUser");
@@ -74,7 +96,7 @@ public class AdminController {
         return "admin-jobs";
     }
 
-    @GetMapping("/delete-job/{id}")
+    @RequestMapping(value = "/delete-job/{id}", method = {RequestMethod.GET, RequestMethod.POST})
     public String deleteJob(@PathVariable Long id, HttpSession session) {
         User user = (User) session.getAttribute("loggedUser");
         if (!isAdmin(user)) return "redirect:/dashboard";
@@ -83,7 +105,7 @@ public class AdminController {
         return "redirect:/admin/jobs";
     }
 
-    // EVENTS
+    // EVENTS MANAGEMENT
     @GetMapping("/events")
     public String events(Model model, HttpSession session) {
         User user = (User) session.getAttribute("loggedUser");
@@ -93,12 +115,22 @@ public class AdminController {
         return "admin-events";
     }
 
-    @GetMapping("/delete-event/{id}")
+    @RequestMapping(value = "/delete-event/{id}", method = {RequestMethod.GET, RequestMethod.POST})
     public String deleteEvent(@PathVariable Long id, HttpSession session) {
         User user = (User) session.getAttribute("loggedUser");
         if (!isAdmin(user)) return "redirect:/dashboard";
 
         eventService.deleteEvent(id);
         return "redirect:/admin/events";
+    }
+
+    // APPLICATION OVERSIGHT
+    @GetMapping("/applications")
+    public String applications(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("loggedUser");
+        if (!isAdmin(user)) return "redirect:/dashboard";
+
+        model.addAttribute("applications", appService.getAllApplications());
+        return "admin-applications";
     }
 }

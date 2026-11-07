@@ -1,0 +1,19 @@
+# Maven target & build
+**/target/
+**/.settings/
+**/.project
+**/.classpath
+**/.factorypath
+
+# OS & IDE
+.DS_Store
+Thumbs.db
+*.log
+.idea/
+*.iml
+.vscode/
+
+# User uploads & runtime files
+uploads/
+Alumni-Bridge/uploads/*
+!Alumni-Bridge/uploads/.gitkeep

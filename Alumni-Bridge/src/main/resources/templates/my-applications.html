@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>My Applications</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My Applications | Alumni Bridge</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -55,10 +57,10 @@
         <div class="col-md-4" th:each="app : ${apps}">
             <div class="card shadow p-4">
 
-                <h5 class="fw-bold" th:text="${app.job.title}"></h5>
+                <h5 class="fw-bold" th:text="${app.job != null ? app.job.title : 'Job Posting Unavailable'}"></h5>
 
-                <p class="text-muted mb-1" th:text="${app.job.company}"></p>
-                <p class="text-muted small" th:text="${app.job.location}"></p>
+                <p class="text-muted mb-1" th:text="${app.job != null ? app.job.company : 'N/A'}"></p>
+                <p class="text-muted small" th:text="${app.job != null ? app.job.location : 'Flexible'}"></p>
 
                 <hr>
 

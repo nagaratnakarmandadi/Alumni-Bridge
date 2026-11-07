@@ -30,21 +30,16 @@ public class DashboardController {
 
     @GetMapping("/dashboard")
     public String dashboard(Model model, HttpSession session) {
-
         User user = (User) session.getAttribute("loggedUser");
-
         if (user == null) {
             return "redirect:/login";
         }
 
-        // 🔹 COMMON STATS
-        model.addAttribute("alumniCount", userService.getAllUsers().size());
+        // Accurately count Alumni
+        model.addAttribute("alumniCount", userService.countAlumni());
         model.addAttribute("jobCount", jobService.getAllJobs().size());
         model.addAttribute("eventCount", eventService.getAllEvents().size());
-
-        // 🔹 USER SPECIFIC
-        model.addAttribute("applicationCount",
-                appService.getApplicationsByUser(user).size());
+        model.addAttribute("applicationCount", appService.getUserApplications(user).size());
 
         return "dashboard";
     }

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Job Applicants | Alumni Bridge</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+body { background: #f4f6f9; padding-top: 80px; font-family: 'Segoe UI', sans-serif; }
+.card { border-radius: 12px; border: none; }
+</style>
+</head>
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>👥 Candidate Applicants</h2>
+            <p class="text-muted mb-0">Reviewing applications for <b th:text="${job.title}"></b> at <span th:text="${job.company}"></span></p>
+        </div>
+        <a th:href="@{'/jobs/' + ${job.id}}" class="btn btn-outline-secondary">⬅ Back to Job</a>
+    </div>
+
+    <div th:if="${#lists.isEmpty(applications)}" class="card shadow p-5 text-center">
+        <h5 class="text-muted">No applications received yet.</h5>
+        <p class="text-muted">Candidates applying for this role will appear here.</p>
+    </div>
+
+    <div th:if="${!#lists.isEmpty(applications)}" class="card shadow p-3">
+        <table class="table table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Candidate</th>
+                    <th>Email</th>
+                    <th>Applied Date</th>
+                    <th>Current Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="app : ${applications}">
+                    <td>
+                        <a th:if="${app.user != null}" th:href="@{'/view-user/' + ${app.user.id}}" 
+                           class="fw-bold text-decoration-none" th:text="${app.user.name}">Applicant Name</a>
+                        <span th:if="${app.user == null}" class="text-muted">Unknown</span>
+                    </td>
+                    <td th:text="${app.user != null ? app.user.email : 'N/A'}">email</td>
+                    <td th:text="${app.appliedDate != null ? app.appliedDate : 'Recent'}">Date</td>
+                    <td>
+                        <span class="badge" 
+                              th:classappend="${app.status == 'ACCEPTED' ? 'bg-success' : (app.status == 'REJECTED' ? 'bg-danger' : (app.status == 'SHORTLISTED' ? 'bg-info' : 'bg-secondary'))}"
+                              th:text="${app.status}">APPLIED</span>
+                    </td>
+                    <td>
+                        <form th:action="@{'/jobs/application/' + ${app.id} + '/status'}" method="post" class="d-inline-flex gap-2">
+                            <input type="hidden" name="jobId" th:value="${job.id}">
+                            <select name="status" class="form-select form-select-sm" style="width: 140px;">
+                                <option value="APPLIED" th:selected="${app.status == 'APPLIED'}">Applied</option>
+                                <option value="IN_REVIEW" th:selected="${app.status == 'IN_REVIEW'}">In Review</option>
+                                <option value="SHORTLISTED" th:selected="${app.status == 'SHORTLISTED'}">Shortlisted</option>
+                                <option value="ACCEPTED" th:selected="${app.status == 'ACCEPTED'}">Accepted</option>
+                                <option value="REJECTED" th:selected="${app.status == 'REJECTED'}">Rejected</option>
+                            </select>
+                            <button class="btn btn-sm btn-primary">Update</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

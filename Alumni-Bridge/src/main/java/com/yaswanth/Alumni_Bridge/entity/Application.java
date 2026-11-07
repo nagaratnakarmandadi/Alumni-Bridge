@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "application", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"user_id", "job_id"})
+})
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,7 +26,9 @@ public class Application {
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	private String status; // APPLIED
+	private String status = "APPLIED"; // APPLIED, REVIEWED, SHORTLISTED, ACCEPTED, REJECTED
 
-	// Getters & Setters
+	private String appliedDate;
+	private String resumeUrl;
+	private String coverNote;
 }

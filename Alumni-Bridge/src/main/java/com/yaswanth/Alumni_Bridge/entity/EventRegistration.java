@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
+@Table(name = "event_registration", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"user_id", "event_id"})
+})
 @Data
 public class EventRegistration {
 
@@ -17,5 +20,5 @@ public class EventRegistration {
     @ManyToOne
     private Event event;
 
-    // getters & setters
+    private String registrationDate;
 }

@@ -22,34 +22,41 @@ public class AlumniController {
 
 	@GetMapping("/alumni")
 	public String viewAlumni(@RequestParam(required = false) String keyword,
-			@RequestParam(required = false) String role, Model model, HttpSession session) {
-
-		// 🔒 protect route
-		if (session.getAttribute("loggedUser") == null) {
-			return "redirect:/login";
-		}
+			@RequestParam(required = false) String role, 
+			@RequestParam(required = false) String error,
+			Model model, HttpSession session) {
 
 		User currentUser = (User) session.getAttribute("loggedUser");
+		if (currentUser == null) {
+			return "redirect:/login";
+		}
 
 		List<User> users = userService.searchUsers(keyword, role, currentUser.getId());
 
 		model.addAttribute("users", users);
-		model.addAttribute("keyword", keyword);
-		model.addAttribute("role", role);
+		model.addAttribute("keyword", keyword != null ? keyword : "");
+		model.addAttribute("role", role != null ? role : "");
+		if ("not_found".equals(error)) {
+			model.addAttribute("errorMessage", "The requested user profile was not found.");
+		}
 
 		return "alumni-list";
 	}
 
 	@GetMapping("/view-user/{id}")
 	public String viewUser(@PathVariable Long id, Model model, HttpSession session) {
-
-		if (session.getAttribute("loggedUser") == null) {
+		User currentUser = (User) session.getAttribute("loggedUser");
+		if (currentUser == null) {
 			return "redirect:/login";
 		}
 
 		User user = userService.getUserById(id);
+		if (user == null) {
+			return "redirect:/alumni?error=not_found";
+		}
+
 		model.addAttribute("user", user);
-		model.addAttribute("currentUser", session.getAttribute("loggedUser"));
+		model.addAttribute("currentUser", currentUser);
 
 		return "view-user";
 	}

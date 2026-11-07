@@ -12,17 +12,23 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(nullable = false)
 	private String name;
+
+	@Column(unique = true, nullable = false)
 	private String email;
+
+	@Column(nullable = false)
 	private String password;
+
+	@Column(nullable = false)
 	private String role;
-	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Profile profile;
+
 	private String profileImage;
+
 	@Column(nullable = false)
 	private Boolean blocked = false;
-
-	
-
-	// getters & setters
 }

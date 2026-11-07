@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<title>User Profile</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>User Profile | Alumni Bridge</title>
 
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
@@ -11,6 +13,7 @@
 body {
 	background: #f4f6f9;
 	font-family: 'Segoe UI', sans-serif;
+	padding-top: 80px;
 }
 
 /* CARD */
@@ -59,9 +62,9 @@ body {
 <body>
 
 	<!-- NAVBAR -->
-	<div th:replace="fragments/navbar :: navbar"></div>
+	<div th:replace="~{fragments/navbar :: navbar}"></div>
 
-	<div class="container" style="margin-top: 100px;">
+	<div class="container mb-5">
 
 		<div class="row justify-content-center">
 			<div class="col-md-6">
@@ -74,60 +77,82 @@ body {
 					<!-- IMAGE -->
 					<div class="text-center">
 						<img
-							th:src="${user.profileImage != null} ? 
-                                  @{'/' + ${user.profileImage}} : 
-                                  'https://via.placeholder.com/120'"
-							class="profile-img">
+							th:src="${user.profileImage != null and !#strings.isEmpty(user.profileImage)} ? 
+                                  (${#strings.startsWith(user.profileImage, 'uploads/')} ? @{'/' + ${user.profileImage}} : @{'/uploads/' + ${user.profileImage}}) : 
+                                  @{/images/default-avatar.svg}"
+							onerror="this.onerror=null;this.src='/images/default-avatar.svg';"
+							class="profile-img" alt="Profile Image">
 					</div>
 
 					<!-- BODY -->
-					<div class="card-body">
+					<div class="card-body px-4">
 
 						<!-- NAME -->
-						<h4 class="fw-bold" th:text="${user.name}"></h4>
+						<h4 class="fw-bold mt-2" th:text="${user.name}">User Name</h4>
 
 						<!-- EMAIL -->
-						<p class="text-muted" th:text="${user.email}"></p>
+						<p class="text-muted mb-1" th:text="${user.email}">user@email.com</p>
 
 						<!-- ROLE -->
-						<span class="badge bg-dark role-badge mb-3" th:text="${user.role}"></span>
+						<span class="badge bg-dark role-badge mb-3" th:text="${user.role}">ROLE</span>
 
 						<hr>
 
 						<!-- PROFILE DETAILS -->
 						<div th:if="${user.profile != null}" class="text-start">
 
-							<p>
-								<span class="section-title">🛠 Skills:</span><br> <span
-									th:text="${user.profile.skills}"></span>
+							<!-- ACADEMIC INFO -->
+							<div th:if="${user.profile.degree != null or user.profile.branch != null or user.profile.graduationYear != null}" class="mb-3">
+								<p class="section-title">🎓 Education</p>
+								<p class="mb-2 text-dark">
+									<span th:text="${user.profile.degree}">Degree</span>
+									<span th:if="${user.profile.branch != null}"> in <span th:text="${user.profile.branch}"></span></span>
+									<span th:if="${user.profile.graduationYear != null}"> (Class of <span th:text="${user.profile.graduationYear}"></span>)</span>
+								</p>
+							</div>
+
+							<p class="mb-2">
+								<span class="section-title">🏢 Company:</span>
+								<span class="ms-1" th:text="${user.profile.company != null ? user.profile.company : 'Not specified'}"></span>
 							</p>
 
-							<p>
-								<span class="section-title">🏢 Company:</span><br> <span
-									th:text="${user.profile.company}"></span>
+							<p class="mb-2">
+								<span class="section-title">💼 Experience:</span>
+								<span class="ms-1" th:text="${user.profile.experience != null ? user.profile.experience : 'Not specified'}"></span>
 							</p>
 
-							<p>
-								<span class="section-title">💼 Experience:</span><br> <span
-									th:text="${user.profile.experience}"></span>
+							<p class="mb-2">
+								<span class="section-title">🛠 Skills:</span>
+								<span class="ms-1" th:text="${user.profile.skills != null ? user.profile.skills : 'Not specified'}"></span>
 							</p>
 
-							<p>
-								<span class="section-title">📝 Bio:</span><br> <span
-									th:text="${user.profile.bio}"></span>
+							<p class="mb-2">
+								<span class="section-title">📝 Bio:</span><br> 
+								<span class="text-muted" style="white-space: pre-line;" th:text="${user.profile.bio != null ? user.profile.bio : 'No bio available'}"></span>
 							</p>
+
+							<!-- SOCIAL LINKS -->
+							<div class="mt-3 pt-2 border-top" th:if="${user.profile.linkedinUrl != null or user.profile.githubUrl != null}">
+								<span class="section-title d-block mb-2">🌐 Social Profiles:</span>
+								<div class="d-flex gap-2">
+									<a th:if="${user.profile.linkedinUrl != null and !#strings.isEmpty(user.profile.linkedinUrl)}" 
+									   th:href="${user.profile.linkedinUrl}" target="_blank" class="btn btn-sm btn-outline-primary">LinkedIn</a>
+									<a th:if="${user.profile.githubUrl != null and !#strings.isEmpty(user.profile.githubUrl)}" 
+									   th:href="${user.profile.githubUrl}" target="_blank" class="btn btn-sm btn-outline-dark">GitHub</a>
+								</div>
+							</div>
 
 						</div>
 
 						<div th:if="${user.profile == null}">
-							<p class="text-danger">No profile details available</p>
+							<p class="text-muted my-3">No additional profile details provided.</p>
 						</div>
 
 						<!-- ACTION BUTTONS -->
 						<div class="mt-4 text-center">
 
 							<!-- MESSAGE BUTTON (PRIMARY ACTION) -->
-							<div th:if="${currentUser.id != user.id}" class="mb-3">
+							<div th:if="${currentUser != null and currentUser.id != user.id}" class="mb-3">
 								<a th:href="@{'/chat/' + ${user.id}}"
 									class="btn btn-primary w-75 fw-semibold"> 💬 Send Message </a>
 							</div>
@@ -147,5 +172,6 @@ body {
 
 	</div>
 
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

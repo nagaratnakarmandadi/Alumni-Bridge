@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<title>Admin Panel</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin Panel | Alumni Bridge</title>
 
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
@@ -11,6 +13,7 @@
 body {
 	background: #f4f6f9;
 	padding-top: 70px;
+	font-family: 'Segoe UI', sans-serif;
 }
 
 /* cards */
@@ -24,13 +27,14 @@ body {
 	transform: translateY(-5px);
 }
 
-.icon {
-	font-size: 30px;
+.stat-number {
+	font-size: 2rem;
+	font-weight: 700;
+	color: #0d6efd;
 }
 
-/* navbar */
-.admin-navbar {
-	background: #212529;
+.icon {
+	font-size: 32px;
 }
 </style>
 
@@ -38,37 +42,85 @@ body {
 
 <body>
 
-	<!-- 🔥 ADMIN NAVBAR -->
+	<!-- ADMIN NAVBAR -->
 	<div th:replace="~{fragments/admin-navbar :: adminNavbar}"></div>
 
-	<!-- 🔹 CONTENT -->
-	<div class="container">
+	<!-- CONTENT -->
+	<div class="container mt-4">
 
-		<h3 class="mb-4">👨‍💼 Admin Dashboard</h3>
+		<div class="d-flex justify-content-between align-items-center mb-4">
+			<h3>👨‍💼 Platform Administration & Analytics</h3>
+		</div>
 
+		<!-- ANALYTICS CARDS -->
+		<div class="row g-4 mb-4">
+			<div class="col-md-3">
+				<div class="card shadow p-4 text-center">
+					<div class="icon">👥</div>
+					<div class="stat-number" th:text="${totalUsers}">0</div>
+					<p class="text-muted mb-0">Total Users Registered</p>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="card shadow p-4 text-center">
+					<div class="icon">🎓</div>
+					<div class="stat-number text-success" th:text="${totalAlumni}">0</div>
+					<p class="text-muted mb-0">Verified Alumni</p>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="card shadow p-4 text-center">
+					<div class="icon">💼</div>
+					<div class="stat-number text-primary" th:text="${totalJobs}">0</div>
+					<p class="text-muted mb-0">Active Job Postings</p>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="card shadow p-4 text-center">
+					<div class="icon">📄</div>
+					<div class="stat-number text-info" th:text="${totalApplications}">0</div>
+					<p class="text-muted mb-0">Job Applications Submitted</p>
+				</div>
+			</div>
+		</div>
+
+		<!-- MANAGEMENT MODULES -->
+		<h4 class="mb-3">Administrative Controls</h4>
 		<div class="row g-4">
 
-			<div class="col-md-4">
+			<div class="col-md-3">
 				<div class="card shadow p-4 text-center">
 					<div class="icon">👥</div>
 					<h5 class="mt-2">Manage Users</h5>
-					<a href="/admin/users" class="btn btn-outline-primary btn-sm">Open</a>
+					<p class="text-muted small">View, block, or remove users</p>
+					<a href="/admin/users" class="btn btn-outline-primary btn-sm">Open Users</a>
 				</div>
 			</div>
 
-			<div class="col-md-4">
+			<div class="col-md-3">
 				<div class="card shadow p-4 text-center">
 					<div class="icon">💼</div>
 					<h5 class="mt-2">Manage Jobs</h5>
-					<a href="/admin/jobs" class="btn btn-outline-success btn-sm">Open</a>
+					<p class="text-muted small">Moderate active job listings</p>
+					<a href="/admin/jobs" class="btn btn-outline-success btn-sm">Open Jobs</a>
 				</div>
 			</div>
 
-			<div class="col-md-4">
+			<div class="col-md-3">
 				<div class="card shadow p-4 text-center">
 					<div class="icon">📅</div>
 					<h5 class="mt-2">Manage Events</h5>
-					<a href="/admin/events" class="btn btn-outline-info btn-sm">Open</a>
+					<p class="text-muted small">Oversee community events</p>
+					<a href="/admin/events" class="btn btn-outline-info btn-sm">Open Events</a>
+				</div>
+			</div>
+
+			<div class="col-md-3">
+				<div class="card shadow p-4 text-center">
+					<div class="icon">📄</div>
+					<h5 class="mt-2">Application Oversight</h5>
+					<p class="text-muted small">Platform-wide applications</p>
+					<a href="/admin/applications" class="btn btn-outline-warning btn-sm">Open Applications</a>
 				</div>
 			</div>
 

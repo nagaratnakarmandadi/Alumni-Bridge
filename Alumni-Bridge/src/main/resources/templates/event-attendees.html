@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Event Attendees | Alumni Bridge</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+body { background: #f4f6f9; padding-top: 80px; font-family: 'Segoe UI', sans-serif; }
+.card { border-radius: 12px; border: none; }
+</style>
+</head>
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>🎟️ Registered Attendees</h2>
+            <p class="text-muted mb-0">Attendees for <b th:text="${event.title}">Event Title</b> on <span th:text="${event.date}"></span></p>
+        </div>
+        <a href="/events" class="btn btn-outline-secondary">⬅ Back to Events</a>
+    </div>
+
+    <div th:if="${#lists.isEmpty(attendees)}" class="card shadow p-5 text-center">
+        <h5 class="text-muted">No registrations yet.</h5>
+        <p class="text-muted">Users registering for this event will appear here.</p>
+    </div>
+
+    <div th:if="${!#lists.isEmpty(attendees)}" class="card shadow p-3">
+        <table class="table table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Attendee Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Registration Date</th>
+                    <th>Contact</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="att : ${attendees}">
+                    <td>
+                        <a th:if="${att.user != null}" th:href="@{'/view-user/' + ${att.user.id}}" 
+                           class="fw-bold text-decoration-none" th:text="${att.user.name}">User</a>
+                        <span th:if="${att.user == null}" class="text-muted">Unknown</span>
+                    </td>
+                    <td th:text="${att.user != null ? att.user.email : 'N/A'}">email</td>
+                    <td>
+                        <span class="badge bg-secondary" th:text="${att.user != null ? att.user.role : 'MEMBER'}">ROLE</span>
+                    </td>
+                    <td th:text="${att.registrationDate != null ? att.registrationDate : 'Confirmed'}">Date</td>
+                    <td>
+                        <a th:if="${att.user != null}" th:href="@{'/chat/' + ${att.user.id}}" class="btn btn-sm btn-outline-primary">
+                            💬 Message
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

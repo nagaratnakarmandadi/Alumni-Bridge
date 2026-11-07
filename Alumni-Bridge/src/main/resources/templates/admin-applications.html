@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Application Oversight | Admin</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+body { background: #f4f6f9; padding-top: 70px; font-family: 'Segoe UI', sans-serif; }
+.card { border-radius: 15px; border: none; }
+</style>
+</head>
+<body>
+
+<div th:replace="~{fragments/admin-navbar :: adminNavbar}"></div>
+
+<div class="container">
+    <h3 class="mb-4">📄 All Job Applications (Platform-wide)</h3>
+
+    <div th:if="${#lists.isEmpty(applications)}" class="card shadow p-5 text-center">
+        <h5 class="text-muted">No applications submitted yet.</h5>
+    </div>
+
+    <div th:if="${!#lists.isEmpty(applications)}" class="card shadow p-3">
+        <table class="table table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Job Title</th>
+                    <th>Company</th>
+                    <th>Applicant</th>
+                    <th>Email</th>
+                    <th>Applied Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="app : ${applications}">
+                    <td class="fw-semibold" th:text="${app.job != null ? app.job.title : 'Deleted Job'}">Job</td>
+                    <td th:text="${app.job != null ? app.job.company : 'N/A'}">Company</td>
+                    <td th:text="${app.user != null ? app.user.name : 'Unknown User'}">Applicant</td>
+                    <td th:text="${app.user != null ? app.user.email : 'N/A'}">Email</td>
+                    <td th:text="${app.appliedDate != null ? app.appliedDate : 'Recent'}">Date</td>
+                    <td>
+                        <span class="badge" 
+                              th:classappend="${app.status == 'ACCEPTED' ? 'bg-success' : (app.status == 'REJECTED' ? 'bg-danger' : (app.status == 'SHORTLISTED' ? 'bg-info' : 'bg-secondary'))}"
+                              th:text="${app.status}">Status</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

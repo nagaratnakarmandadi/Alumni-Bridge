@@ -1,56 +1,89 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Messages</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Messages | Alumni Bridge</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
-        body { background: #f4f6f9; padding-top: 70px; }
+        body { background: #f4f6f9; padding-top: 70px; font-family: 'Segoe UI', sans-serif; }
 
         .message-card {
             border-radius: 12px;
             transition: 0.3s;
+            border: 1px solid #e9ecef;
+            margin-bottom: 8px;
         }
 
         .message-card:hover {
-            transform: translateY(-3px);
-            background: #f8f9fa;
+            transform: translateY(-2px);
+            background: #fff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .avatar-sm {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
         }
     </style>
 </head>
 
 <body>
 
-<div th:replace="fragments/navbar :: navbar"></div>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
 
-<div class="container">
+<div class="container col-md-7 mt-4">
 
     <div class="text-center mb-4">
-        <h2>💬 Messages</h2>
-        <p class="text-muted">Your conversations</p>
+        <h2>💬 Direct Messages</h2>
+        <p class="text-muted">Stay connected with your alumni and student network</p>
     </div>
 
     <!-- EMPTY STATE -->
-    <div th:if="${#lists.isEmpty(messages)}" class="text-center mt-5">
-        <h5>No messages yet</h5>
-        <p>Start a conversation from alumni directory</p>
-        <a href="/alumni" class="btn btn-primary">Explore Alumni</a>
+    <div th:if="${#lists.isEmpty(conversations)}" class="card shadow p-5 text-center">
+        <h5>No active conversations yet 📭</h5>
+        <p class="text-muted">Start a conversation directly from the Alumni Directory.</p>
+        <div class="mt-2">
+            <a href="/alumni" class="btn btn-primary">Browse Alumni Directory</a>
+        </div>
     </div>
 
-    <!-- MESSAGE LIST -->
-    <div class="list-group">
+    <!-- CONVERSATION LIST (Grouped by partner) -->
+    <div class="list-group" th:if="${!#lists.isEmpty(conversations)}">
 
-        <a th:each="msg : ${messages}"
-           th:href="@{'/chat/' + ${msg.sender.id}}"
-           class="list-group-item list-group-item-action message-card p-3">
+        <a th:each="conv : ${conversations}"
+           th:href="@{'/chat/' + ${conv.partner.id}}"
+           class="list-group-item list-group-item-action message-card p-3 shadow-sm d-flex align-items-center">
 
-            <div class="d-flex justify-content-between">
-                <b th:text="${msg.sender.name}"></b>
-                <small class="text-muted">recent</small>
+            <!-- AVATAR -->
+            <img th:src="${conv.partner.profileImage != null and !#strings.isEmpty(conv.partner.profileImage)} ? 
+                         (${#strings.startsWith(conv.partner.profileImage, 'uploads/')} ? @{'/' + ${conv.partner.profileImage}} : @{'/uploads/' + ${conv.partner.profileImage}}) : 
+                         @{/images/default-avatar.svg}"
+                 onerror="this.onerror=null;this.src='/images/default-avatar.svg';"
+                 class="avatar-sm me-3 border" alt="Partner Avatar">
+
+            <!-- DETAILS -->
+            <div class="flex-grow-1">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="mb-1 fw-bold text-dark" th:text="${conv.partner.name}">Partner Name</h6>
+                    <small class="text-muted" 
+                           th:if="${conv.latestMessage != null and conv.latestMessage.timestamp != null}"
+                           th:text="${#temporals.format(conv.latestMessage.timestamp, 'MMM dd, HH:mm')}">Time</small>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted text-truncate" style="max-width: 450px;" 
+                           th:text="${conv.latestMessage != null ? conv.latestMessage.content : 'Started conversation'}">Last message...</small>
+
+                    <span th:if="${conv.unreadCount > 0}" 
+                          class="badge bg-primary rounded-pill" 
+                          th:text="${conv.unreadCount}">1</span>
+                </div>
             </div>
-
-            <small class="text-muted" th:text="${msg.content}"></small>
 
         </a>
 

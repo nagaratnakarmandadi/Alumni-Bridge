@@ -14,11 +14,18 @@ public class Profile {
 	private String skills;
 	private String company;
 	private String experience;
+	
+	@Column(columnDefinition = "TEXT")
 	private String bio;
+
+	private String degree;
+	private String branch;
+	private String graduationYear;
+	private String phone;
+	private String linkedinUrl;
+	private String githubUrl;
 
 	@OneToOne
 	@JoinColumn(name = "user_id")
 	private User user;
-
-	// Getters & Setters
 }

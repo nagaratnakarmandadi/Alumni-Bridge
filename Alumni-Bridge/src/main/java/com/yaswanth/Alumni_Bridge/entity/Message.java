@@ -25,11 +25,9 @@ public class Message {
     @JoinColumn(name = "receiver_id")
     private User receiver;
 
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
     private LocalDateTime timestamp;
     private boolean seen = false;
-
-
-    // Getters & Setters
 }
