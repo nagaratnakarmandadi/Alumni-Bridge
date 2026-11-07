@@ -67,6 +67,11 @@ public class ProfileController {
 		return "edit-profile";
 	}
 
+	@GetMapping("/save-profile")
+	public String redirectSaveProfile() {
+		return "redirect:/edit-profile";
+	}
+
 	// SAVE PROFILE + SECURE IMAGE UPLOAD
 	@PostMapping("/save-profile")
 	public String saveProfile(@ModelAttribute Profile profile,

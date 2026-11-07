@@ -10,6 +10,11 @@
 	rel="stylesheet">
 
 <style>
+html {
+	scroll-padding-top: 85px;
+	scroll-behavior: smooth;
+}
+
 body {
 	font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
 	color: #212529;
@@ -89,7 +94,8 @@ body {
 
 /* SECTIONS */
 .section {
-	padding: 70px 20px;
+	padding: 75px 20px;
+	scroll-margin-top: 85px;
 }
 
 .feature-card {
@@ -110,14 +116,39 @@ body {
 	margin-bottom: 15px;
 }
 
+/* HOW IT WORKS STEP BADGE */
+.step-num {
+	width: 52px;
+	height: 52px;
+	border-radius: 50%;
+	background: linear-gradient(135deg, #0d6efd, #6610f2);
+	color: #ffffff;
+	font-size: 1.35rem;
+	font-weight: 800;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	box-shadow: 0 4px 14px rgba(13, 110, 253, 0.35);
+}
+
 /* FOOTER */
 footer {
 	background: #0f172a;
-	color: #94a3b8;
+	color: #cbd5e1;
 }
 
-footer a:hover {
+.footer-link {
+	color: #cbd5e1 !important;
+	text-decoration: none;
+	transition: color 0.2s ease;
+}
+
+.footer-link:hover {
 	color: #38bdf8 !important;
+}
+
+.text-light-secondary {
+	color: #94a3b8 !important;
 }
 </style>
 </head>
@@ -317,24 +348,24 @@ footer a:hover {
 
 			<div class="row g-4">
 				<div class="col-md-4">
-					<div class="p-4 border rounded-4 bg-white h-100 shadow-sm">
-						<div class="display-6 mb-3">1️⃣</div>
+					<div class="p-4 border rounded-4 bg-white h-100 shadow-sm text-center">
+						<div class="step-num mx-auto mb-3">1</div>
 						<h5 class="fw-bold">Register with College Email</h5>
 						<p class="text-muted small">Create your profile as a Student or Alumni in under 60 seconds with your branch and graduation batch.</p>
 					</div>
 				</div>
 
 				<div class="col-md-4">
-					<div class="p-4 border rounded-4 bg-white h-100 shadow-sm">
-						<div class="display-6 mb-3">2️⃣</div>
+					<div class="p-4 border rounded-4 bg-white h-100 shadow-sm text-center">
+						<div class="step-num mx-auto mb-3">2</div>
 						<h5 class="fw-bold">Discover & Network</h5>
 						<p class="text-muted small">Search the directory by company name or technical skill, review profiles, and initiate conversations.</p>
 					</div>
 				</div>
 
 				<div class="col-md-4">
-					<div class="p-4 border rounded-4 bg-white h-100 shadow-sm">
-						<div class="display-6 mb-3">3️⃣</div>
+					<div class="p-4 border rounded-4 bg-white h-100 shadow-sm text-center">
+						<div class="step-num mx-auto mb-3">3</div>
 						<h5 class="fw-bold">Apply, Learn & Give Back</h5>
 						<p class="text-muted small">Submit applications with your resume, attend community workshops, and post opportunities for fellow juniors.</p>
 					</div>
@@ -350,23 +381,23 @@ footer a:hover {
 
 				<div class="col-md-4">
 					<h5 class="text-white fw-bold">🎓 Alumni Bridge</h5>
-					<p class="small">The official alumni engagement and career network connecting students, faculty, and graduates for career advancement and community.</p>
-					<p class="small mb-0">Official Alumni Relations Cell</p>
+					<p class="small text-light-secondary">The official alumni engagement and career network connecting students, faculty, and graduates for career advancement and community.</p>
+					<p class="small mb-0 text-white-50">Official Alumni Relations Cell</p>
 				</div>
 
 				<div class="col-md-2">
 					<h6 class="text-white fw-semibold mb-3">Quick Links</h6>
 					<ul class="list-unstyled small">
-						<li class="mb-2"><a href="/" class="text-decoration-none text-muted">Home</a></li>
-						<li class="mb-2"><a href="/alumni" class="text-decoration-none text-muted">Alumni Directory</a></li>
-						<li class="mb-2"><a href="/jobs" class="text-decoration-none text-muted">Career Opportunities</a></li>
-						<li class="mb-2"><a href="/events" class="text-decoration-none text-muted">Campus Events</a></li>
+						<li class="mb-2"><a href="/" class="footer-link">Home</a></li>
+						<li class="mb-2"><a href="/alumni" class="footer-link">Alumni Directory</a></li>
+						<li class="mb-2"><a href="/jobs" class="footer-link">Career Opportunities</a></li>
+						<li class="mb-2"><a href="/events" class="footer-link">Campus Events</a></li>
 					</ul>
 				</div>
 
 				<div class="col-md-3">
 					<h6 class="text-white fw-semibold mb-3">Collegiate Support</h6>
-					<ul class="list-unstyled small">
+					<ul class="list-unstyled small text-light-secondary">
 						<li class="mb-2">Placement & Career Development Cell</li>
 						<li class="mb-2">Departmental Alumni Coordinators</li>
 						<li class="mb-2">Institutional Verification Center</li>
@@ -375,8 +406,12 @@ footer a:hover {
 
 				<div class="col-md-3">
 					<h6 class="text-white fw-semibold mb-3">Contact & Support</h6>
-					<p class="small mb-1">📧 support@alumnibridge.com</p>
-					<p class="small mb-1">📍 Campus Administration Building, India</p>
+					<p class="small mb-2 text-light-secondary">
+						<span class="text-primary me-2 fw-bold">✉</span> <a href="mailto:support@alumnibridge.com" class="footer-link">support@alumnibridge.com</a>
+					</p>
+					<p class="small mb-2 text-light-secondary">
+						<span class="text-danger me-2 fw-bold">📍</span> Campus Administration Building, India
+					</p>
 					<div class="mt-3">
 						<a href="/login" class="btn btn-outline-light btn-sm me-2">Sign In</a>
 						<a href="/register" class="btn btn-primary btn-sm">Sign Up</a>
@@ -388,8 +423,8 @@ footer a:hover {
 			<hr style="border-color: #334155;" class="my-4">
 
 			<div class="d-flex justify-content-between align-items-center flex-wrap small">
-				<p class="mb-0">© 2026 Alumni Bridge. All rights reserved.</p>
-				<p class="mb-0 text-muted">Empowering collegiate networks</p>
+				<p class="mb-0 text-light-secondary">© 2026 Alumni Bridge. All rights reserved.</p>
+				<p class="mb-0 text-light-secondary">Empowering collegiate networks</p>
 			</div>
 		</div>
 	</footer>

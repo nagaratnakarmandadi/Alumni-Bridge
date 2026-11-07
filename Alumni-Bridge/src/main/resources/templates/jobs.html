@@ -107,7 +107,7 @@ body {
 
 							<div th:if="${job.postedBy == null or job.postedBy.id != session.loggedUser.id}">
 								<div th:if="${!appliedJobIds.contains(job.id)}">
-									<a th:href="@{'/apply/' + ${job.id}}" class="btn btn-primary btn-sm px-3"> 
+									<a th:href="@{'/jobs/' + ${job.id}}" class="btn btn-primary btn-sm px-3"> 
 										Apply 
 									</a>
 								</div>
