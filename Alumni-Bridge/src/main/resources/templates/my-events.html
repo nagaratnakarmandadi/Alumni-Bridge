@@ -14,6 +14,9 @@ body {
 	background: #f4f6f9;
 	padding-top: 70px;
 	font-family: 'Segoe UI', sans-serif;
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
 }
 
 .card {
@@ -63,6 +66,8 @@ body {
 		</div>
 
 	</div>
+
+	<div th:replace="~{fragments/footer :: footer}"></div>
 
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
